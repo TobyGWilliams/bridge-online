@@ -4,60 +4,74 @@ const sendAction = require("./modules/send-action");
 
 const port = 7777;
 
-const connect = () => {
-  const socket = new WebSocket(`ws://localhost:${port}`);
-  socket.onopen = () => {
-    sendAction(socket, "NEW_SESSION");
-  };
+let gameId = null;
+
+const wait = (delay) =>
+  new Promise((resolve) => {
+    setTimeout(() => resolve(), delay);
+  });
+
+const newConnection = () =>
+  new Promise((resolve) => {
+    const socket = new WebSocket(`ws://localhost:${port}`);
+
+    socket.onopen = () => {
+      resolve(socket);
+    };
+  });
+
+const connection1MessageHandler = (user) => (message) => {
+  const { action, data } = JSON.parse(message);
+
+  if (action === "GAME_JOINED") {
+    gameId = data.gameId;
+  }
+
+  if (action == "STATE") {
+    console.log(user, action, data);
+  }
 };
 
-const connectThatJoinsGame = (gameId) => {
-  const socket = new WebSocket(`ws://localhost:${port}`);
+const playerCreateGame = async () => {
+  const connection1 = await newConnection();
 
-  const onMessage = (message) => {
-    const { action, data } = JSON.parse(message);
+  connection1.on("message", connection1MessageHandler("player1"));
 
-    console.log(action);
+  sendAction(connection1, "NEW_SESSION");
 
-    if (action === "GAME_CREATED") {
-      console.log(data);
-      sendAction(socket, "NEW_PLAYER", { name: "Jamie", position: "north" });
-    }
-  };
+  await wait(1000);
 
-  socket.on("message", onMessage);
+  sendAction(connection1, "CREATE_GAME");
 
-  socket.onopen = () => {
-    sendAction(socket, "NEW_SESSION");
+  await wait(1000);
 
-    setTimeout(() => {
-      sendAction(socket, "JOIN_GAME", { gameId });
-    }, 3000);
-  };
+  if (!gameId) {
+    throw new Error("Didn't receieve a game id back");
+  }
+
+  sendAction(connection1, "NEW_PLAYER", { name: "Jamie", position: "north" });
 };
 
-const connectThatCreatesGame = () => {
-  const socket = new WebSocket(`ws://localhost:${port}`);
+const secondPlayerJoins = async () => {
+  const connection2 = await newConnection();
 
-  const onMessage = (message) => {
-    const { action, data } = JSON.parse(message);
+  connection2.on("message", connection1MessageHandler("player2"));
 
-    if (action === "GAME_JOINED") {
-      connectThatJoinsGame(data.gameId);
-      sendAction(socket, "NEW_PLAYER", { name: "Toby", position: "south" });
-    }
-  };
+  sendAction(connection2, "NEW_SESSION");
 
-  socket.on("message", onMessage);
+  await wait(1000);
 
-  socket.onopen = () => {
-    sendAction(socket, "NEW_SESSION");
+  sendAction(connection2, "JOIN_GAME", { gameId });
 
-    setTimeout(() => {
-      sendAction(socket, "CREATE_GAME");
-    }, 3000);
-  };
+  await wait(1000);
+
+  sendAction(connection2, "NEW_PLAYER", { name: "Toby", position: "south" });
 };
 
-setTimeout(connectThatCreatesGame, 1000);
-// setTimeout(connect, 2000);
+const doTheThings = async () => {
+  await playerCreateGame();
+
+  await secondPlayerJoins();
+};
+
+setTimeout(doTheThings, 1000);
