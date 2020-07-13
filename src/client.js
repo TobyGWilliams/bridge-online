@@ -1,16 +1,63 @@
 const WebSocket = require("ws");
 
-const port = 7777;
+const sendAction = require("./modules/send-action");
 
-let handshake =  5 
+const port = 7777;
 
 const connect = () => {
   const socket = new WebSocket(`ws://localhost:${port}`);
   socket.onopen = () => {
-    console.log("connection");
-    const data = { action: "NEW_SESSION" };
-    socket.send(JSON.stringify(data));
+    sendAction(socket, "NEW_SESSION");
   };
 };
 
-setTimeout(connect, 1000);
+const connectThatJoinsGame = (gameId) => {
+  const socket = new WebSocket(`ws://localhost:${port}`);
+
+  const onMessage = (message) => {
+    const { action, data } = JSON.parse(message);
+
+    console.log(action);
+
+    if (action === "GAME_CREATED") {
+      console.log(data);
+      sendAction(socket, "NEW_PLAYER", { name: "Jamie", position: "north" });
+    }
+  };
+
+  socket.on("message", onMessage);
+
+  socket.onopen = () => {
+    sendAction(socket, "NEW_SESSION");
+
+    setTimeout(() => {
+      sendAction(socket, "JOIN_GAME", { gameId });
+    }, 3000);
+  };
+};
+
+const connectThatCreatesGame = () => {
+  const socket = new WebSocket(`ws://localhost:${port}`);
+
+  const onMessage = (message) => {
+    const { action, data } = JSON.parse(message);
+
+    if (action === "GAME_JOINED") {
+      connectThatJoinsGame(data.gameId);
+      sendAction(socket, "NEW_PLAYER", { name: "Toby", position: "south" });
+    }
+  };
+
+  socket.on("message", onMessage);
+
+  socket.onopen = () => {
+    sendAction(socket, "NEW_SESSION");
+
+    setTimeout(() => {
+      sendAction(socket, "CREATE_GAME");
+    }, 3000);
+  };
+};
+
+setTimeout(connectThatCreatesGame, 1000);
+// setTimeout(connect, 2000);
