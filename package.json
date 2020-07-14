@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --inspect ./src/index.js ",
-    "client": "nodemon --inspect=9221 ./src/client.js "
+    "client": "nodemon --inspect=9221 ./src/client.js",
+    "test": "jest --watch --runInBand --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",

@@ -5,6 +5,9 @@ const { v4: uuid } = require("uuid");
 const Game = require("./modules/game");
 const sendAction = require("./modules/send-action");
 
+console.clear();
+console.log('-----------------------------')
+
 const app = express();
 const port = 7777;
 

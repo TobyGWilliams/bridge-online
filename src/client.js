@@ -4,7 +4,11 @@ const sendAction = require("./modules/send-action");
 
 const port = 7777;
 
+const delay = 200
+
 let gameId = null;
+
+console.clear()
 
 const wait = (delay) =>
   new Promise((resolve) => {
@@ -20,58 +24,67 @@ const newConnection = () =>
     };
   });
 
-const connection1MessageHandler = (user) => (message) => {
+const connectionMessageHandler = (user) => (message) => {
   const { action, data } = JSON.parse(message);
 
-  if (action === "GAME_JOINED") {
-    gameId = data.gameId;
-  }
-
   if (action == "STATE") {
-    console.log(user, action, data);
+    if (data.gameId && !gameId) {
+      gameId = data.gameId;
+    }
+
+    console.log(user, "\n", data);
   }
 };
 
-const playerCreateGame = async () => {
-  const connection1 = await newConnection();
+const firstPlayer = async (name, position) => {
+  const connection = await newConnection();
 
-  connection1.on("message", connection1MessageHandler("player1"));
+  connection.on("message", connectionMessageHandler(name));
 
-  sendAction(connection1, "NEW_SESSION");
+  sendAction(connection, "NEW_SESSION");
 
-  await wait(1000);
+  await wait(delay);
 
-  sendAction(connection1, "CREATE_GAME");
+  sendAction(connection, "CREATE_GAME");
 
-  await wait(1000);
+  await wait(delay);
 
   if (!gameId) {
     throw new Error("Didn't receieve a game id back");
   }
 
-  sendAction(connection1, "NEW_PLAYER", { name: "Jamie", position: "north" });
+  sendAction(connection, "NEW_PLAYER", { name, position });
+
+  return connection
 };
 
-const secondPlayerJoins = async () => {
-  const connection2 = await newConnection();
+const playerJoins = async (name, position) => {
+  const connection = await newConnection();
 
-  connection2.on("message", connection1MessageHandler("player2"));
+  connection.on("message", connectionMessageHandler(name));
 
-  sendAction(connection2, "NEW_SESSION");
+  sendAction(connection, "NEW_SESSION");
 
-  await wait(1000);
+  await wait(delay);
 
-  sendAction(connection2, "JOIN_GAME", { gameId });
+  sendAction(connection, "JOIN_GAME", { gameId });
 
-  await wait(1000);
+  await wait(delay);
 
-  sendAction(connection2, "NEW_PLAYER", { name: "Toby", position: "south" });
+  sendAction(connection, "NEW_PLAYER", { name, position });
+
+  return connection
 };
 
 const doTheThings = async () => {
-  await playerCreateGame();
+  const jamie = await firstPlayer("Jamie", "south");
+  const toby = await playerJoins("Toby", "north");
+  const jessica = await playerJoins("Jessica", "east");
+  const david = await playerJoins("David", "west");
 
-  await secondPlayerJoins();
+  await wait(delay);
+
+  sendAction(jamie, "BEGIN_GAME");
 };
 
-setTimeout(doTheThings, 1000);
+setTimeout(doTheThings, 2000);
