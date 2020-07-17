@@ -1,6 +1,7 @@
 const { v4: uuid } = require("uuid");
 
 const sendAction = require("./send-action");
+const { contracts } = require("./bids");
 const { dealCards } = require("./cards");
 
 const SHORT_DELAY = 1000;
@@ -22,11 +23,12 @@ class Game {
   updateClientState() {
     sendToAll(this.sockets, ([key, connection]) => {
       const players = Object.entries(this.players).map(
-        ([playerKey, { connectionId, cards, ...data } = {}]) => [
+        ([playerKey, { connectionId, cards, currentUserAction, ...data } = {}]) => [
           playerKey,
           {
             ...data,
             isUser: connectionId === key,
+            currentUserAction:!!currentUserAction,
             cards: connectionId === key ? cards : undefined,
           },
         ]
@@ -37,6 +39,7 @@ class Game {
         gameId: this.gameId,
         state: this.state,
         messageSequence: this.messageSequence,
+        currentBid: this.currentBid,
       };
 
       this.messageSequence += 1;
@@ -64,7 +67,14 @@ class Game {
   }
 
   startBidding(direction) {
-    console.log(direction);
+    this.state = "BIDDING";
+    this.players[direction] = {
+      ...this.players[direction],
+      availableBids: contracts,
+      currentUserAction: true,
+    };
+
+    this.updateClientState();
   }
 
   addConnection(connectionId, socket) {
