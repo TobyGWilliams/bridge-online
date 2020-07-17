@@ -1,3 +1,28 @@
+const { suites } = require("./cards");
+
+const noTrumps = "NO_TRUMPS";
+
+const orderOfSuites = [
+  suites.club,
+  suites.diamond,
+  suites.heart,
+  suites.spade,
+  noTrumps,
+];
+
+const bids = [1, 2, 3, 4, 5, 6, 7];
+
+const contracts = bids.reduce((accumulator, bid) => {
+  return [
+    ...accumulator,
+    [bid, suites.club],
+    [bid, suites.diamond],
+    [bid, suites.heart],
+    [bid, suites.spade],
+    [bid, noTrumps],
+  ];
+}, []);
+
 const shuffle = (array) => {
   var m = array.length,
     t,
@@ -30,37 +55,4 @@ const dealCards = () =>
     )
     .map((hand) => hand.filter((card) => card));
 
-const suites = {
-  heart: "HEART",
-  spade: "SPADE",
-  club: "CLUB",
-  diamond: "DIAMOND",
-};
-
-const cards = [
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "JACK",
-  "QUEEN",
-  "KING",
-  "ACE",
-];
-
-const deck = cards.reduce((accumulator, card) => {
-  return [
-    ...accumulator,
-    [card, suites.heart],
-    [card, suites.spade],
-    [card, suites.club],
-    [card, suites.diamond],
-  ];
-}, []);
-
-module.exports = { dealCards, suites, cards, deck };
+module.exports = { orderOfSuites, bids, contracts, dealCards };

@@ -2,6 +2,7 @@
   "name": "online-bridge",
   "version": "1.0.0",
   "description": "",
+  "engines" : { "node" : ">=14.5.0" },
   "main": "index.js",
   "scripts": {
     "start": "nodemon --inspect ./src/index.js ",

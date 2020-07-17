@@ -3,6 +3,8 @@ const { v4: uuid } = require("uuid");
 const sendAction = require("./send-action");
 const { dealCards } = require("./cards");
 
+const SHORT_DELAY = 1000;
+
 const sendToAll = (connections, callback) => {
   Object.entries(connections).forEach(callback);
 };
@@ -14,20 +16,21 @@ class Game {
     this.players = {};
     this.state = "LOBBY";
     this.messageSequence = 1;
+    this.currentBid = null;
   }
 
   updateClientState() {
     sendToAll(this.sockets, ([key, connection]) => {
-      const players = Object.entries(
-        this.players
-      ).map(([playerKey, { connectionId, cards, ...data } = {}]) => [
-        playerKey,
-        {
-          ...data,
-          isUser: connectionId === key,
-          cards: connectionId === key ? cards : undefined,
-        },
-      ]);
+      const players = Object.entries(this.players).map(
+        ([playerKey, { connectionId, cards, ...data } = {}]) => [
+          playerKey,
+          {
+            ...data,
+            isUser: connectionId === key,
+            cards: connectionId === key ? cards : undefined,
+          },
+        ]
+      );
 
       const data = {
         players: Object.fromEntries(players),
@@ -43,22 +46,31 @@ class Game {
   }
 
   dealCards() {
-    const [hand1, hand2, hand3, hand4] = dealCards();
+    return new Promise((resolve) => {
+      const [hand1, hand2, hand3, hand4] = dealCards();
 
-    this.players = {
-      north: { ...this.players.north, cards: hand1 },
-      south: { ...this.players.south, cards: hand2 },
-      east: { ...this.players.east, cards: hand3 },
-      west: { ...this.players.west, cards: hand4 },
-    };
+      this.players = {
+        north: { ...this.players.north, cards: hand1 },
+        south: { ...this.players.south, cards: hand2 },
+        east: { ...this.players.east, cards: hand3 },
+        west: { ...this.players.west, cards: hand4 },
+      };
 
-    setTimeout(() => this.updateClientState(), 100);
+      setTimeout(() => {
+        this.updateClientState();
+        resolve();
+      }, SHORT_DELAY);
+    });
+  }
+
+  startBidding(direction) {
+    console.log(direction);
   }
 
   addConnection(connectionId, socket) {
     this.sockets[connectionId] = socket;
 
-    socket.on("message", (message) => {
+    socket.on("message", async (message) => {
       const { action, data } = JSON.parse(message);
 
       if (action === "NEW_PLAYER") {
@@ -70,9 +82,13 @@ class Game {
       }
 
       if (action === "BEGIN_GAME") {
-        this.state = "BIDDING";
+        this.state = "DEALING";
         this.updateClientState();
-        this.dealCards();
+
+        await this.dealCards();
+
+        this.state = "BIDDING";
+        this.startBidding("north");
       }
     });
 
