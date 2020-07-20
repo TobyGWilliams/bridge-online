@@ -1,6 +1,6 @@
 module.exports = {
-  north: "NORTH",
-  east: "EAST",
-  south: "SOUTH",
-  west: "WEST",
+  north: "north",
+  east: "east",
+  south: "south",
+  west: "west",
 };

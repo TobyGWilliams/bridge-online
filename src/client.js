@@ -4,11 +4,13 @@ const sendAction = require("./modules/send-action");
 
 const port = 7777;
 
-const delay = 200
+const delay = 200;
 
 let gameId = null;
 
-console.clear()
+let gameState = null;
+
+console.clear();
 
 const wait = (delay) =>
   new Promise((resolve) => {
@@ -24,14 +26,22 @@ const newConnection = () =>
     };
   });
 
+const waitFoGameState = (state) =>
+  new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (gameState === state) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, delay);
+  });
+
 const connectionMessageHandler = (user) => (message) => {
   const { action, data } = JSON.parse(message);
 
   if (action == "STATE") {
-    if (data.gameId && !gameId) {
-      gameId = data.gameId;
-    }
-
+    gameState = data.state;
+    gameId = data.gameId;
     console.log(user, "\n", data);
   }
 };
@@ -55,7 +65,7 @@ const firstPlayer = async (name, position) => {
 
   sendAction(connection, "NEW_PLAYER", { name, position });
 
-  return connection
+  return connection;
 };
 
 const playerJoins = async (name, position) => {
@@ -73,7 +83,7 @@ const playerJoins = async (name, position) => {
 
   sendAction(connection, "NEW_PLAYER", { name, position });
 
-  return connection
+  return connection;
 };
 
 const doTheThings = async () => {
@@ -85,6 +95,14 @@ const doTheThings = async () => {
   await wait(delay);
 
   sendAction(jamie, "BEGIN_GAME");
+
+  await waitFoGameState("BIDDING");
+
+  sendAction(toby, "BID", { bid: [2, "DIAMOND"] });
+
+  await wait(delay)
+
+  sendAction(jessica, "BID", { bid: [3, "DIAMOND"] });
 };
 
 setTimeout(doTheThings, 2000);

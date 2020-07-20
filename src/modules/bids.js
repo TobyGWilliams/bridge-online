@@ -23,4 +23,12 @@ const contracts = bids.reduce((accumulator, bid) => {
   ];
 }, []);
 
-module.exports = { orderOfSuites, bids, contracts };
+const getRemainingContracts = (currentBid) => {
+  const output = contracts.findIndex(
+    ([bid, suite]) => bid === currentBid[0] && suite === currentBid[1]
+  );
+
+  return contracts.slice(output + 1);
+};
+
+module.exports = { orderOfSuites, bids, contracts, getRemainingContracts };

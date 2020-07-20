@@ -1,4 +1,4 @@
-const { contracts } = require("./bids");
+const { contracts, getRemainingContracts } = require("./bids");
 
 test("the bids are correct", () => {
   expect(contracts).toEqual([
@@ -30,6 +30,18 @@ test("the bids are correct", () => {
     [6, "CLUB"],
     [6, "DIAMOND"],
     [6, "HEART"],
+    [6, "SPADE"],
+    [6, "NO_TRUMPS"],
+    [7, "CLUB"],
+    [7, "DIAMOND"],
+    [7, "HEART"],
+    [7, "SPADE"],
+    [7, "NO_TRUMPS"],
+  ]);
+});
+
+test("getRemainingBids", () => {
+  expect(getRemainingContracts([6, "HEART"])).toEqual([
     [6, "SPADE"],
     [6, "NO_TRUMPS"],
     [7, "CLUB"],
