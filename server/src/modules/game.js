@@ -139,6 +139,7 @@ class Game {
         ...player,
         currentUserAction: key === nextDirectionToPlay,
         availableContracts: getRemainingContracts(this.currentBid),
+        bid: key === direction ? bid : player.bid,
       },
     ]);
 
