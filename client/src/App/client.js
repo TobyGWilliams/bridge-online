@@ -92,30 +92,42 @@ const doTheThings = async (
   setPlayer3State,
   setPlayer4State
 ) => {
-  const jamie = await firstPlayer("Jamie", "south", setPlayer1State);
-  const toby = await playerJoins("Toby", "north", setPlayer2State);
-  const jessica = await playerJoins("Jessica", "east", setPlayer3State);
+  const jamie = await firstPlayer("Jamie", "south", setPlayer3State);
+  const toby = await playerJoins("Toby", "north", setPlayer1State);
+  const jessica = await playerJoins("Jessica", "east", setPlayer2State);
   const david = await playerJoins("David", "west", setPlayer4State);
 
-  // await wait(delay);
+  await wait(delay);
 
-  // sendAction(jamie, "BEGIN_GAME");
+  sendAction(jamie, "BEGIN_GAME");
 
-  // await waitForGameState("BIDDING");
+  await waitForGameState("BIDDING");
 
-  // sendAction(toby, "BID", { bid: [2, "DIAMOND"] });
+  sendAction(toby, "BID", { bid: [2, "DIAMOND"] });
 
-  // await wait(delay);
+  await wait(delay);
 
-  // sendAction(jessica, "BID", { bid: [3, "DIAMOND"] });
+  sendAction(jessica, "BID", { bid: [3, "DIAMOND"] });
 
-  // await wait(delay);
+  await wait(delay);
 
-  // sendAction(jamie, "BID", { bid: [4, "DIAMOND"] });
+  sendAction(jamie, "BID", { bid: [4, "DIAMOND"] });
 
-  // await wait(delay);
+  await wait(delay);
 
-  // sendAction(david, "BID", { bid: [5, "DIAMOND"] });
+  sendAction(david, "BID", { bid: [5, "DIAMOND"] });
+
+  await wait(delay);
+
+  sendAction(toby, "BID", { bid: 'PASS' });
+
+  await wait(delay);
+
+  sendAction(jessica, "BID", { bid: 'PASS' });
+  
+  await wait(delay);
+
+  sendAction(jamie, "BID", { bid: 'PASS' });
 };
 
 export default doTheThings;

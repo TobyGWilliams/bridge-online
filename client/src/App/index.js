@@ -7,10 +7,10 @@ import playTheGame from "./client";
 import "./index.css";
 
 const App = () => {
-  const [player1State, setPlayer1State] = useState(null);
-  const [player2State, setPlayer2State] = useState(null);
-  const [player3State, setPlayer3State] = useState(null);
-  const [player4State, setPlayer4State] = useState(null);
+  const [player1State, setPlayer1State] = useState(undefined);
+  const [player2State, setPlayer2State] = useState(undefined);
+  const [player3State, setPlayer3State] = useState(undefined);
+  const [player4State, setPlayer4State] = useState(undefined);
 
   useEffect(() => {
     playTheGame(
@@ -25,10 +25,10 @@ const App = () => {
     <div className="App">
       <h1>Bridge-Online</h1>
       <div style={{ display: "flex" }}>
-        <Player name="Player1" data={player1State} />
-        <Player name="Player2" data={player2State} />
-        <Player name="Player3" data={player3State} />
-        <Player name="Player4" data={player4State} />
+        <Player name="Toby" data={player1State} position="north" />
+        <Player name="Jessica" data={player2State} position="east" />
+        <Player name="Jamie" data={player3State} position="south" />
+        <Player name="David" data={player4State} position="west" />
       </div>
     </div>
   );

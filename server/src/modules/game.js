@@ -24,6 +24,13 @@ const getPlayer = (players, connectionId) => {
   return direction;
 };
 
+const reverseOrderOfPlay = {
+  north: west,
+  east: north,
+  south: east,
+  west: south,
+};
+
 const orderOfPlay = {
   north: east,
   east: south,
@@ -61,6 +68,7 @@ class Game {
       );
 
       const data = {
+        currentPlayer: this.players[key],
         players: Object.fromEntries(players),
         gameId: this.gameId,
         state: this.state,
@@ -131,7 +139,25 @@ class Game {
       return;
     }
 
-    this.currentBid = bid;
+    if (bid !== "PASS") {
+      this.currentBid = bid;
+    }
+
+    if (bid === "PASS") {
+      const previous = reverseOrderOfPlay[direction];
+      const previous1 = reverseOrderOfPlay[previous];
+
+      if (
+        this.players[previous].bid === "PASS" &&
+        this.players[previous1].bid === "PASS"
+      ) {
+        this.state = "FIRST_TRICK";
+
+        this.updateClientState();
+
+        return;
+      }
+    }
 
     this.players = iterateOverPlayers(this.players, ([key, player]) => [
       key,
