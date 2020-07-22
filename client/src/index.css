@@ -28,6 +28,10 @@ h1 {
   color: red;
 }
 
-.player-wrapper{
+.player-wrapper {
   margin: 10px;
+}
+
+.game-information {
+  height: 30px;
 }

@@ -147,11 +147,23 @@ class Game {
       const previous = reverseOrderOfPlay[direction];
       const previous1 = reverseOrderOfPlay[previous];
 
+      // check if all the players have passed
       if (
         this.players[previous].bid === "PASS" &&
         this.players[previous1].bid === "PASS"
       ) {
-        this.state = "FIRST_TRICK";
+        this.state = "LEADING_FIRST_CARD";
+
+        this.players = iterateOverPlayers(this.players, ([key, player]) => [
+          key,
+          {
+            ...player,
+            currentUserAction: key === orderOfPlay[direction],
+            availableContracts: getRemainingContracts(this.currentBid),
+            wonTheContract: key === direction,
+            bid: key === direction ? bid : player.bid,
+          },
+        ]);
 
         this.updateClientState();
 

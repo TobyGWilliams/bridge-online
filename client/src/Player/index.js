@@ -46,23 +46,29 @@ const Player = ({
   return (
     <span className="player-wrapper" style={{ flexBasis: "25%" }}>
       <h2>{name}</h2>
-      <div>State: {state}</div>
-      <div>Current Bid: {currentBid ? <Card card={currentBid} /> : "-"}</div>
-      <div>Bid: {playerData && <Bid bid={playerData.bid} />}</div>
-      {playerData && playerData.cards && (
-        <div>
-          Cards:{" "}
-          {playerData.cards.map((card) => (
-            <Card card={card} />
-          ))}
-        </div>
-      )}
+      <div className="game-information">State: {state}</div>
+      <div className="game-information">
+        Is active player:{" "}
+        {playerData && playerData.currentUserAction ? "true" : "false"}
+      </div>
+      <div className="game-information">
+        Current Bid: {currentBid ? <Card card={currentBid} /> : "-"}
+      </div>
+      <div className="game-information">
+        Won the Contract:{" "}
+        {playerData && playerData.wonTheContract ? "true" : "false"}
+      </div>
+      <div className="game-information">
+        Bid: {playerData && <Bid bid={playerData.bid} />}
+      </div>
+      <div className="game-information">
+        Cards:{" "}
+        {playerData &&
+          playerData.cards &&
+          playerData.cards.map((card) => <Card card={card} />)}
+      </div>
     </span>
   );
 };
-
-{
-  /* {playerData && <pre>{JSON.stringify(playerData.cards, null, 2)}</pre>} */
-}
 
 export default Player;
