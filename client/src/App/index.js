@@ -1,37 +1,57 @@
 import React, { useState, useEffect } from "react";
 
-import Player from "../Player";
+import App from "./App";
 
-import playTheGame from "./client";
+import sendAction from "../util/send-action";
+import GameContext from "../GameContext";
 
 import "./index.css";
 
-const App = () => {
-  const [player1State, setPlayer1State] = useState(undefined);
-  const [player2State, setPlayer2State] = useState(undefined);
-  const [player3State, setPlayer3State] = useState(undefined);
-  const [player4State, setPlayer4State] = useState(undefined);
+const port = 7777;
+
+const Wrapper = () => {
+  const [gameState, setGameState] = useState(undefined);
+  const [connected, setConnected] = useState(false);
+  const [socket, setSocket] = useState(undefined);
 
   useEffect(() => {
-    playTheGame(
-      setPlayer1State,
-      setPlayer2State,
-      setPlayer3State,
-      setPlayer4State
-    );
+    const socket = new WebSocket(`ws://localhost:${port}`);
+
+    socket.onopen = () => {
+      setConnected(true);
+      setSocket(socket);
+      sendAction(socket, "NEW_SESSION");
+    };
+
+    socket.onclose = () => {
+      setConnected(false);
+      setSocket(undefined);
+    };
+
+    socket.onmessage = ({ data: message }) => {
+      const { action, data } = JSON.parse(message);
+
+      if (action === "SET_CONNECTION_ID") {
+        console.log("connectionId", data);
+      }
+
+      if (action === "STATE") {
+        setGameState(data);
+      }
+    };
   }, []);
 
   return (
-    <div className="App">
-      <h1>Bridge-Online</h1>
-      <div style={{ display: "flex" }}>
-        <Player name="Toby" data={player1State} position="north" />
-        <Player name="Jessica" data={player2State} position="east" />
-        <Player name="Jamie" data={player3State} position="south" />
-        <Player name="David" data={player4State} position="west" />
-      </div>
-    </div>
+    <GameContext.Provider
+      value={{
+        state: gameState,
+        connected,
+        sendMessage: (action, data) => sendAction(socket, action, data),
+      }}
+    >
+      <App />
+    </GameContext.Provider>
   );
 };
 
-export default App;
+export default Wrapper;
