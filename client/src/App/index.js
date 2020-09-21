@@ -29,6 +29,7 @@ const Wrapper = () => {
     };
 
     socket.onmessage = ({ data: message }) => {
+      console.log(message);
       const { action, data } = JSON.parse(message);
 
       if (action === "SET_CONNECTION_ID") {
@@ -46,7 +47,11 @@ const Wrapper = () => {
       value={{
         state: gameState,
         connected,
-        sendMessage: (action, data) => sendAction(socket, action, data),
+        sendMessage: (action, data) =>
+          sendAction(socket, action, {
+            ...data,
+            gameId: data?.gameId || gameState?.gameId,
+          }),
       }}
     >
       <App />

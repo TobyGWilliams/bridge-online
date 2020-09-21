@@ -6,7 +6,14 @@ const Game = require("./modules/game");
 const sendAction = require("./modules/send-action");
 
 console.clear();
-console.log('-----------------------------')
+console.log("-----------------------------");
+
+const gameActions = Object.entries(Game.GAME_ACTIONS).map(
+  ([key, value]) => value
+);
+
+const findGame = (games, gameId) =>
+  games.find((game) => game.gameId === gameId);
 
 const app = express();
 const port = 7777;
@@ -16,22 +23,37 @@ const games = [];
 const server = new WebSocket.Server({ server: app.listen(port) });
 
 const messageHandler = (connectionId, socket) => (message) => {
-  const { action, data } = JSON.parse(message);
+  const { action, data } = JSON.parse(message)
 
   if (action === "CREATE_GAME") {
     const game = new Game();
-    game.addConnection(connectionId, socket);
+    const messageCallback = (message) => socket.send(message);
+
     games.push(game);
+    game.addConnection(connectionId, messageCallback);
   }
 
-  if (action === "NEW_SESSION") {
-    sendAction(socket, "SET_CONNECTION_ID", { connectionId });
+  if (gameActions.includes(action)) {
+    const game = findGame(games, data.gameId);
+
+    if (!game.callbacks[connectionId]) {
+      console.error("game not associated with player");
+      return;
+    }
+
+    game.action(connectionId, action, data);
   }
 
   if (action === "JOIN_GAME") {
-    const game = games.find((game) => game.gameId === data.gameId);
-    game.addConnection(connectionId, socket);
+    const game = findGame(games, data.gameId);
+    const messageCallback = (message) => socket.send(message);
+
+    game.addConnection(connectionId, messageCallback);
   }
+
+  // if (action === "NEW_SESSION") {
+  //   sendAction(socket, "SET_CONNECTION_ID", { connectionId });
+  // }
 };
 
 server.on("connection", (socket) => {

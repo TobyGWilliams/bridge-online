@@ -43,15 +43,24 @@ const getNextPlayerToPlay = (direction) => orderOfPlay[direction];
 class Game {
   constructor() {
     this.gameId = uuid();
-    this.sockets = {};
+    this.callbacks = {};
     this.players = {};
     this.state = "LOBBY";
     this.messageSequence = 1;
     this.currentBid = null;
   }
 
+  static GAME_ACTIONS = {
+    newPlayer: "NEW_PLAYER",
+  };
+
+  getState() {
+    return { ...this };
+  }
+
   updateClientState() {
-    sendToAll(this.sockets, ([key, connection]) => {
+    sendToAll(this.callbacks, ([key, callback]) => {
+      console.log(this);
       const players = Object.entries(this.players).map(
         ([
           playerKey,
@@ -67,8 +76,18 @@ class Game {
         ]
       );
 
+      const [playerDirection = undefined, currentPlayer = undefined] =
+        Object.entries(this.players).find(
+          ([direction, playerState]) => playerState.connectionId === key
+        ) || [];
+
       const data = {
-        currentPlayer: this.players[key],
+        currentPlayer: playerDirection
+          ? {
+              ...currentPlayer,
+              direction: playerDirection,
+            }
+          : undefined,
         players: Object.fromEntries(players),
         gameId: this.gameId,
         state: this.state,
@@ -78,148 +97,143 @@ class Game {
 
       this.messageSequence += 1;
 
-      sendAction(connection, "STATE", data);
+      callback(JSON.stringify({ action: "STATE", data }));
     });
   }
 
-  dealCards() {
-    return new Promise((resolve) => {
-      const [hand1, hand2, hand3, hand4] = dealCards();
+  // dealCards() {
+  //   const [hand1, hand2, hand3, hand4] = dealCards();
+
+  //   this.players = {
+  //     north: { ...this.players.north, cards: hand1 },
+  //     south: { ...this.players.south, cards: hand2 },
+  //     east: { ...this.players.east, cards: hand3 },
+  //     west: { ...this.players.west, cards: hand4 },
+  //   };
+  // }
+
+  // updatePlayerAction(direction) {
+  //   this.players[direction] = {
+  //     ...this.players[direction],
+  //     currentUserAction: true,
+  //   };
+  // }
+
+  // startBidding(direction) {
+  //   this.state = "BIDDING";
+
+  //   this.players = iterateOverPlayers(
+  //     this.players,
+  //     ([playerDirection, player]) => [
+  //       playerDirection,
+  //       {
+  //         ...player,
+  //         bid: null,
+  //         availableContracts: contracts,
+  //         currentUserAction: playerDirection === direction,
+  //       },
+  //     ]
+  //   );
+
+  //   this.updateClientState();
+  // }
+
+  // placeBid(bid, direction) {
+  //   const nextDirectionToPlay = getNextPlayerToPlay(direction);
+
+  //   if (this.state !== "BIDDING") {
+  //     console.error("game not in bidding state");
+  //     return;
+  //   }
+
+  //   if (!this.players[direction].currentUserAction) {
+  //     console.error("wrong user bid");
+  //     return;
+  //   }
+
+  //   if (bid !== "PASS") {
+  //     this.currentBid = bid;
+  //   }
+
+  //   if (bid === "PASS") {
+  //     const previous = reverseOrderOfPlay[direction];
+  //     const previous1 = reverseOrderOfPlay[previous];
+
+  //     // check if all the players have passed
+  //     if (
+  //       this.players[previous].bid === "PASS" &&
+  //       this.players[previous1].bid === "PASS"
+  //     ) {
+  //       this.state = "LEADING_FIRST_CARD";
+
+  //       this.players = iterateOverPlayers(this.players, ([key, player]) => [
+  //         key,
+  //         {
+  //           ...player,
+  //           currentUserAction: key === orderOfPlay[direction],
+  //           availableContracts: getRemainingContracts(this.currentBid),
+  //           wonTheContract: key === direction,
+  //           bid: key === direction ? bid : player.bid,
+  //         },
+  //       ]);
+
+  //       this.updateClientState();
+
+  //       return;
+  //     }
+  //   }
+
+  //   this.players = iterateOverPlayers(this.players, ([key, player]) => [
+  //     key,
+  //     {
+  //       ...player,
+  //       currentUserAction: key === nextDirectionToPlay,
+  //       availableContracts: getRemainingContracts(this.currentBid),
+  //       bid: key === direction ? bid : player.bid,
+  //     },
+  //   ]);
+
+  //   this.updateClientState();
+  // }
+
+  addConnection(connectionId, callback) {
+    this.callbacks[connectionId] = callback;
+
+    this.updateClientState();
+  }
+
+  action(connectionId, action, data) {
+    if (action === Game.GAME_ACTIONS.newPlayer) {
+      if (this.players[data.position]) return;
 
       this.players = {
-        north: { ...this.players.north, cards: hand1 },
-        south: { ...this.players.south, cards: hand2 },
-        east: { ...this.players.east, cards: hand3 },
-        west: { ...this.players.west, cards: hand4 },
+        ...this.players,
+        [data.position]: { name: data.name, connectionId },
       };
 
-      setTimeout(() => {
-        this.updateClientState();
-        resolve();
-      }, SHORT_DELAY);
-    });
-  }
-
-  updatePlayerAction(direction) {
-    this.players[direction] = {
-      ...this.players[direction],
-      currentUserAction: true,
-    };
-  }
-
-  startBidding(direction) {
-    this.state = "BIDDING";
-
-    this.players = iterateOverPlayers(
-      this.players,
-      ([playerDirection, player]) => [
-        playerDirection,
-        {
-          ...player,
-          bid: null,
-          availableContracts: contracts,
-          currentUserAction: playerDirection === direction,
-        },
-      ]
-    );
-
-    this.updateClientState();
-  }
-
-  placeBid(bid, direction) {
-    const nextDirectionToPlay = getNextPlayerToPlay(direction);
-
-    if (this.state !== "BIDDING") {
-      console.error("game not in bidding state");
+      this.updateClientState();
       return;
     }
 
-    if (!this.players[direction].currentUserAction) {
-      console.error("wrong user bid");
-      return;
-    }
+    // if (action === "BID") {
+    //   const direction = getPlayer(this.players, connectionId);
 
-    if (bid !== "PASS") {
-      this.currentBid = bid;
-    }
+    //   console.log(direction);
 
-    if (bid === "PASS") {
-      const previous = reverseOrderOfPlay[direction];
-      const previous1 = reverseOrderOfPlay[previous];
+    //   this.placeBid(data.bid, direction);
+    // }
 
-      // check if all the players have passed
-      if (
-        this.players[previous].bid === "PASS" &&
-        this.players[previous1].bid === "PASS"
-      ) {
-        this.state = "LEADING_FIRST_CARD";
+    // if (action === "BEGIN_GAME") {
+    //   this.state = "DEALING";
 
-        this.players = iterateOverPlayers(this.players, ([key, player]) => [
-          key,
-          {
-            ...player,
-            currentUserAction: key === orderOfPlay[direction],
-            availableContracts: getRemainingContracts(this.currentBid),
-            wonTheContract: key === direction,
-            bid: key === direction ? bid : player.bid,
-          },
-        ]);
+    //   this.dealCards();
 
-        this.updateClientState();
+    //   this.state = "BIDDING";
+    //   this.startBidding("north");
 
-        return;
-      }
-    }
-
-    this.players = iterateOverPlayers(this.players, ([key, player]) => [
-      key,
-      {
-        ...player,
-        currentUserAction: key === nextDirectionToPlay,
-        availableContracts: getRemainingContracts(this.currentBid),
-        bid: key === direction ? bid : player.bid,
-      },
-    ]);
-
-    this.updateClientState();
-  }
-
-  addConnection(connectionId, socket) {
-    this.sockets[connectionId] = socket;
-
-    socket.on("message", async (message) => {
-      const { action, data } = JSON.parse(message);
-
-      if (action === "NEW_PLAYER") {
-        this.players = {
-          ...this.players,
-          [data.position]: { name: data.name, connectionId },
-        };
-        this.updateClientState();
-        return;
-      }
-
-      if (action === "BID") {
-        const direction = getPlayer(this.players, connectionId);
-
-        // console.log(direction);
-
-        this.placeBid(data.bid, direction);
-      }
-
-      if (action === "BEGIN_GAME") {
-        this.state = "DEALING";
-        this.updateClientState();
-
-        await this.dealCards();
-
-        this.state = "BIDDING";
-        this.startBidding("north");
-        return;
-      }
-    });
-
-    this.updateClientState();
+    //   this.updateClientState();
+    //   return;
+    // }
   }
 }
 
