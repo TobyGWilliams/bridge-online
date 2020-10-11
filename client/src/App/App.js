@@ -1,23 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
+import WelcomePage from "../WelcomePage";
 import GameContext from "../GameContext";
+import Lobby from "../Lobby";
+import Table from "../Table";
 
 import "./index.css";
 
 const App = () => (
   <GameContext.Consumer>
     {({ state, connected, sendMessage }) => {
-      console.log(state, connected);
       return (
         <div className="App">
           <h1>Bridge-Online</h1>
-          <button
-            onClick={() => {
-              sendMessage("CREATE_GAME");
-            }}
-          >
-            Create Game
-          </button>
+          {connected && !state && <WelcomePage />}
+          {connected && state && <Lobby />}
+          {connected && state && state?.currentPlayer && <Table />}
         </div>
       );
     }}

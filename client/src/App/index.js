@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 import App from "./App";
 
@@ -46,9 +47,16 @@ const Wrapper = () => {
       value={{
         state: gameState,
         connected,
-        sendMessage: (action, data) => sendAction(socket, action, data),
+        sendMessage: (action, data) =>
+          sendAction(socket, action, {
+            ...data,
+            gameId: data?.gameId || gameState?.gameId,
+          }),
       }}
     >
+      <Helmet>
+        <meta name="game-id" content={gameState?.gameId} />
+      </Helmet>
       <App />
     </GameContext.Provider>
   );
