@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import GameContext from "../GameContext";
 
-const ComponentName = () => {
+export default () => {
   const [gameIdInput, setgameIdInput] = useState(undefined);
   return (
     <GameContext.Consumer>
@@ -37,5 +37,3 @@ const ComponentName = () => {
     </GameContext.Consumer>
   );
 };
-
-export default ComponentName;

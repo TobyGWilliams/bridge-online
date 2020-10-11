@@ -76,6 +76,8 @@ class Game {
         ]
       );
 
+      console.log(this.players);
+
       const [playerDirection = undefined, currentPlayer = undefined] =
         Object.entries(this.players).find(
           ([direction, playerState]) => playerState.connectionId === key
@@ -204,6 +206,7 @@ class Game {
 
   action(connectionId, action, data) {
     if (action === Game.GAME_ACTIONS.newPlayer) {
+      if(!data.position) return
       if (this.players[data.position]) return;
 
       this.players = {

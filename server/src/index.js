@@ -3,7 +3,6 @@ const express = require("express");
 const { v4: uuid } = require("uuid");
 
 const Game = require("./modules/game");
-const sendAction = require("./modules/send-action");
 
 console.clear();
 console.log("-----------------------------");
@@ -23,15 +22,7 @@ const games = [];
 const server = new WebSocket.Server({ server: app.listen(port) });
 
 const messageHandler = (connectionId, socket) => (message) => {
-  const { action, data } = JSON.parse(message)
-
-  if (action === "CREATE_GAME") {
-    const game = new Game();
-    const messageCallback = (message) => socket.send(message);
-
-    games.push(game);
-    game.addConnection(connectionId, messageCallback);
-  }
+  const { action, data } = JSON.parse(message);
 
   if (gameActions.includes(action)) {
     const game = findGame(games, data.gameId);
@@ -44,10 +35,20 @@ const messageHandler = (connectionId, socket) => (message) => {
     game.action(connectionId, action, data);
   }
 
-  if (action === "JOIN_GAME") {
-    const game = findGame(games, data.gameId);
+  if (action === "CREATE_GAME") {
+    const game = new Game();
     const messageCallback = (message) => socket.send(message);
 
+    games.push(game);
+    game.addConnection(connectionId, messageCallback);
+  }
+
+  if (action === "JOIN_GAME") {
+    const game = findGame(games, data.gameId);
+
+    if (!game) return;
+
+    const messageCallback = (message) => socket.send(message);
     game.addConnection(connectionId, messageCallback);
   }
 
