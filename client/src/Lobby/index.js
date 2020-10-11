@@ -15,11 +15,13 @@ export default () => {
           {!state.currentPlayer && (
             <div>
               <input
+                data-test="player-name-input"
                 onChange={(event) => {
                   setName(event.target.value);
                 }}
               ></input>
               <select
+                data-test="player-direction"
                 name="position"
                 onChange={(event) => {
                   setPosition(event.target.value);
@@ -32,6 +34,7 @@ export default () => {
               </select>
 
               <button
+                data-test="new-player-submit"
                 onClick={() => {
                   sendMessage("NEW_PLAYER", {
                     name,

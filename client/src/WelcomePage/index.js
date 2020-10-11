@@ -8,7 +8,7 @@ export default () => {
     <GameContext.Consumer>
       {({ state, connected, sendMessage }) => (
         <div>
-          <button
+          <button data-test='create-game'
             onClick={() => {
               sendMessage("CREATE_GAME");
             }}
@@ -16,16 +16,15 @@ export default () => {
             Create Game
           </button>
           <div>
-            <input
+            <input data-test='input-game-id'
               onChange={(event) => {
                 setgameIdInput(event.target.value);
               }}
             ></input>
           </div>
           <div>
-            <button
+            <button data-test='join-game'
               onClick={() => {
-                console.log(gameIdInput);
                 sendMessage("JOIN_GAME", { gameId: gameIdInput });
               }}
             >

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 import App from "./App";
 
@@ -29,7 +30,6 @@ const Wrapper = () => {
     };
 
     socket.onmessage = ({ data: message }) => {
-      console.log(message);
       const { action, data } = JSON.parse(message);
 
       if (action === "SET_CONNECTION_ID") {
@@ -54,6 +54,9 @@ const Wrapper = () => {
           }),
       }}
     >
+      <Helmet>
+        <meta name="game-id" content={gameState?.gameId} />
+      </Helmet>
       <App />
     </GameContext.Provider>
   );
