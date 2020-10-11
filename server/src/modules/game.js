@@ -76,8 +76,6 @@ class Game {
         ]
       );
 
-      console.log(this.players);
-
       const [playerDirection = undefined, currentPlayer = undefined] =
         Object.entries(this.players).find(
           ([direction, playerState]) => playerState.connectionId === key

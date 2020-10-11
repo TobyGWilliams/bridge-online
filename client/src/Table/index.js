@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import GameContext from "../GameContext";
+import Card from "../Card";
 
 const allPlayersReady = (players) =>
   players.north && players.east && players.south && players.west;
@@ -25,7 +26,11 @@ export default () => (
         {state?.currentPlayer?.cards && (
           <div>
             <h2>Your Cards</h2>
-            <div>cards</div>
+            <div>
+              {state?.currentPlayer?.cards.map((card) => (
+                <Card card={card} />
+              ))}
+            </div>
           </div>
         )}
         {allPlayersReady(state?.players) && (
@@ -38,11 +43,6 @@ export default () => (
             start the game
           </button>
         )}
-        <div>
-          <code style={{ whiteSpace: "break-spaces" }}>
-            {JSON.stringify(state.currentPlayer, null, 2)}
-          </code>
-        </div>
       </div>
     )}
   </GameContext.Consumer>
