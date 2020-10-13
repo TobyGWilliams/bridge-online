@@ -53,6 +53,7 @@ class Game {
   static GAME_ACTIONS = {
     newPlayer: "NEW_PLAYER",
     beginGame: "BEGIN_GAME",
+    bid: "BID",
   };
 
   getState() {
@@ -93,6 +94,7 @@ class Game {
         state: this.state,
         messageSequence: this.messageSequence,
         currentBid: this.currentBid,
+        contracts,
       };
 
       this.messageSequence += 1;
@@ -131,6 +133,69 @@ class Game {
     this.updateClientState();
   }
 
+  placeBid(bid, direction) {
+    const nextDirectionToPlay = getNextPlayerToPlay(direction);
+
+    if (this.state !== "BIDDING") {
+      return;
+    }
+
+    if (!this.players[direction].currentUserAction) {
+      return;
+    }
+
+    if (bid !== "PASS") {
+      this.currentBid = bid;
+    }
+
+    if (bid === "PASS") {
+      const previous = reverseOrderOfPlay[direction];
+      const previous1 = reverseOrderOfPlay[previous];
+
+      // check if all the players have passed
+      if (
+        this.players[previous].bid === "PASS" &&
+        this.players[previous1].bid === "PASS"
+      ) {
+        this.state = "LEADING_FIRST_CARD";
+
+        this.players = iterateOverPlayers(this.players, ([key, player]) => [
+          key,
+          {
+            ...player,
+            currentUserAction: key === orderOfPlay[direction],
+            availableContracts: getRemainingContracts(this.currentBid),
+            wonTheContract: key === direction,
+            bid: key === direction ? bid : player.bid,
+          },
+        ]);
+
+        this.updateClientState();
+
+        return;
+      }
+    }
+
+    this.players = iterateOverPlayers(this.players, ([key, player]) => [
+      key,
+      {
+        ...player,
+        currentUserAction: key === nextDirectionToPlay,
+        availableContracts: getRemainingContracts(this.currentBid),
+        bid: key === direction ? bid : player.bid,
+      },
+    ]);
+
+    this.updateClientState();
+  }
+
+  updatePlayerAction(direction) {
+    this.players[direction] = {
+      ...this.players[direction],
+      currentUserAction: true,
+    };
+  }
+
   addConnection(connectionId, callback) {
     this.callbacks[connectionId] = callback;
 
@@ -162,77 +227,13 @@ class Game {
       this.updateClientState();
       return;
     }
+
+    if (action === Game.GAME_ACTIONS.bid) {
+      const direction = getPlayer(this.players, connectionId);
+
+      this.placeBid(data.bid, direction);
+    }
   }
 }
 
 module.exports = Game;
-
-// if (action === "BID") {
-//   const direction = getPlayer(this.players, connectionId);
-
-//   console.log(direction);
-
-//   this.placeBid(data.bid, direction);
-// }  // placeBid(bid, direction) {
-//   const nextDirectionToPlay = getNextPlayerToPlay(direction);
-
-//   if (this.state !== "BIDDING") {
-//     console.error("game not in bidding state");
-//     return;
-//   }
-
-//   if (!this.players[direction].currentUserAction) {
-//     console.error("wrong user bid");
-//     return;
-//   }
-
-//   if (bid !== "PASS") {
-//     this.currentBid = bid;
-//   }
-
-//   if (bid === "PASS") {
-//     const previous = reverseOrderOfPlay[direction];
-//     const previous1 = reverseOrderOfPlay[previous];
-
-//     // check if all the players have passed
-//     if (
-//       this.players[previous].bid === "PASS" &&
-//       this.players[previous1].bid === "PASS"
-//     ) {
-//       this.state = "LEADING_FIRST_CARD";
-
-//       this.players = iterateOverPlayers(this.players, ([key, player]) => [
-//         key,
-//         {
-//           ...player,
-//           currentUserAction: key === orderOfPlay[direction],
-//           availableContracts: getRemainingContracts(this.currentBid),
-//           wonTheContract: key === direction,
-//           bid: key === direction ? bid : player.bid,
-//         },
-//       ]);
-
-//       this.updateClientState();
-
-//       return;
-//     }
-//   }
-
-//   this.players = iterateOverPlayers(this.players, ([key, player]) => [
-//     key,
-//     {
-//       ...player,
-//       currentUserAction: key === nextDirectionToPlay,
-//       availableContracts: getRemainingContracts(this.currentBid),
-//       bid: key === direction ? bid : player.bid,
-//     },
-//   ]);
-
-//   this.updateClientState();
-// }
-// updatePlayerAction(direction) {
-//   this.players[direction] = {
-//     ...this.players[direction],
-//     currentUserAction: true,
-//   };
-// }

@@ -37,6 +37,7 @@ const Wrapper = () => {
       }
 
       if (action === "STATE") {
+        console.log(data);
         setGameState(data);
       }
     };
