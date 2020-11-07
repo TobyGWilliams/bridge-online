@@ -1,11 +1,17 @@
-const shuffle = (array) => {
-  var m = array.length,
+const seedrandom = require("seedrandom");
+
+const shuffle = (array, seed) => {
+  console.log(seed);
+  const random = seedrandom(seed);
+
+  let m = array.length,
     t,
     i;
 
   while (m) {
-    i = Math.floor(Math.random() * m--);
+    i = Math.floor(random() * m--);
     t = array[m];
+
     array[m] = array[i];
     array[i] = t;
   }
@@ -13,8 +19,8 @@ const shuffle = (array) => {
   return array;
 };
 
-const dealCards = () =>
-  shuffle(deck)
+const dealCards = (seed) =>
+  shuffle([...deck], seed)
     .reduce(
       ([hand1, hand2, hand3, hand4], card, currentIndex) => {
         const random = Math.floor(currentIndex % 4);

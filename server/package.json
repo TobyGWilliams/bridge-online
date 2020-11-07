@@ -2,7 +2,9 @@
   "name": "online-bridge",
   "version": "1.0.0",
   "description": "",
-  "engines" : { "node" : ">=14.5.0" },
+  "engines": {
+    "node": ">=14.5.0"
+  },
   "main": "index.js",
   "scripts": {
     "start": "nodemon --inspect ./src/index.js ",
@@ -17,6 +19,7 @@
     "express": "^4.17.1",
     "got": "^11.3.0",
     "nodemon": "^2.0.4",
+    "seedrandom": "^3.0.5",
     "set-cookie-parser": "^2.4.6",
     "uuid": "^8.2.0"
   },

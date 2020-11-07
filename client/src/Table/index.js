@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { Helmet } from "react-helmet";
 
 import GameContext from "../GameContext";
 import Card from "../components/Card";
@@ -28,6 +29,22 @@ export default () => {
           </div>
         </div>
       )}
+      {state?.currentPlayer?.cards && (
+        <div>
+          <h2>Your Cards</h2>
+          <div>
+            {state?.currentPlayer?.cards.map((card) => (
+              <Card card={card}></Card>
+            ))}
+          </div>
+          <Helmet>
+            <meta
+              name="player-cards"
+              content={JSON.stringify(state?.currentPlayer?.cards)}
+            />
+          </Helmet>
+        </div>
+      )}
       {state?.currentBid && (
         <div>
           <h2>Current Bid</h2>
@@ -41,7 +58,15 @@ export default () => {
           <h2>Available Contracts</h2>
           <div>
             {state?.currentPlayer?.availableContracts.map((bid) => (
-              <Bid bid={bid} sendMessage={sendMessage} />
+              <button
+                onClick={() => {
+                  sendMessage("BID", { bid });
+                }}
+                data-test="place-bid"
+                data-test-bid={JSON.stringify(bid)}
+              >
+                <Bid bid={bid} />
+              </button>
             ))}
           </div>
         </div>

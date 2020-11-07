@@ -41,7 +41,8 @@ const orderOfPlay = {
 const getNextPlayerToPlay = (direction) => orderOfPlay[direction];
 
 class Game {
-  constructor() {
+  constructor(seed) {
+    this.seed = seed;
     this.gameId = uuid();
     this.callbacks = {};
     this.players = {};
@@ -92,6 +93,7 @@ class Game {
         players: Object.fromEntries(players),
         gameId: this.gameId,
         state: this.state,
+        seed: this.seed,
         messageSequence: this.messageSequence,
         currentBid: this.currentBid,
         contracts,
@@ -104,7 +106,7 @@ class Game {
   }
 
   dealCards() {
-    const [hand1, hand2, hand3, hand4] = dealCards();
+    const [hand1, hand2, hand3, hand4] = dealCards(this.seed);
 
     this.players = {
       north: { ...this.players.north, cards: hand1 },

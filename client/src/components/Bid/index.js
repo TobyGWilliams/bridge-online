@@ -8,19 +8,13 @@ const cards = {
   NO_TRUMPS: "NT",
 };
 
-export default ({ bid, sendMessage = () => {} }) => {
+export default ({ bid }) => {
   const [number, suite] = bid;
 
   return (
-    <button
-      onClick={() => {
-        sendMessage("BID", { bid });
-      }}
-    >
-      <span className="card">
-        {number}
-        {cards[suite]}
-      </span>
-    </button>
+    <span className="card">
+      {number}
+      {cards[suite]}
+    </span>
   );
 };
