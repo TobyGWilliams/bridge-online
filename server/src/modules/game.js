@@ -2,7 +2,14 @@ const { v4: uuid } = require("uuid");
 
 const { contracts, getRemainingContracts } = require("./bids");
 const { dealCards } = require("./cards");
-const { north, east, south, west } = require("./directions");
+const {
+  north,
+  east,
+  south,
+  west,
+  northSouth,
+  eastWest,
+} = require("./directions");
 
 const sendToAll = (connections, callback) => {
   Object.entries(connections).forEach(callback);
@@ -19,6 +26,20 @@ const getPlayer = (players, connectionId) => {
   );
 
   return direction;
+};
+
+const partners = {
+  north: northSouth,
+  east: eastWest,
+  south: northSouth,
+  west: eastWest,
+};
+
+const oppositePartner = {
+  north: south,
+  east: west,
+  south: north,
+  west: east,
 };
 
 const reverseOrderOfPlay = {
@@ -39,6 +60,8 @@ const getNextPlayerToPlay = (direction) => orderOfPlay[direction];
 
 class Game {
   constructor(seed) {
+    this.declarer = null;
+    this.dummy = null;
     this.seed = seed;
     this.gameId = uuid();
     this.callbacks = {};
@@ -73,6 +96,7 @@ class Game {
             isUser: connectionId === key,
             currentUserAction: !!currentUserAction,
             cards: connectionId === key ? cards : undefined,
+            numberOfCardsHeld: cards && cards.length,
           },
         ]
       );
@@ -83,19 +107,18 @@ class Game {
         ) || [];
 
       const data = {
-        currentPlayer: playerDirection
-          ? {
-              ...currentPlayer,
-              direction: playerDirection,
-            }
-          : undefined,
-        players: Object.fromEntries(players),
-        gameId: this.gameId,
-        state: this.state,
-        seed: this.seed,
-        messageSequence: this.messageSequence,
-        currentBid: this.currentBid,
         contracts,
+        currentBid: this.currentBid,
+        currentPlayer: playerDirection
+          ? { ...currentPlayer, direction: playerDirection }
+          : undefined,
+        declarer: this.declarer,
+        dummy: this.dummy,
+        gameId: this.gameId,
+        messageSequence: this.messageSequence,
+        players: Object.fromEntries(players),
+        seed: this.seed,
+        state: this.state,
       };
 
       this.messageSequence += 1;
@@ -135,7 +158,6 @@ class Game {
   }
 
   placeBid(bid, direction) {
-    console.log(bid, direction);
     const nextDirectionToPlay = getNextPlayerToPlay(direction);
 
     if (this.state !== "BIDDING") {
@@ -156,17 +178,31 @@ class Game {
         this.players[previous1].bid === "PASS"
       ) {
         const [lastDirectionToBid, lastBid] = this.bids[0];
+        const [winningContract, winningSuit] = lastBid;
+
+        const winningPartners = partners[lastDirectionToBid];
+
+        const winningBids = this.bids.filter(
+          ([direction, [contract, suit]]) =>
+            partners[direction] === winningPartners &&
+            contract === winningContract
+        );
+
+        const [declarer] = winningBids[winningBids.length - 1];
 
         this.state = "LEADING_FIRST_CARD";
         this.winningBid = lastBid;
+        this.declarer = declarer;
+        this.dummy = oppositePartner[this.declarer];
         this.players = iterateOverPlayers(this.players, ([key, player]) => [
           key,
           {
             ...player,
-            currentUserAction: key === orderOfPlay[direction],
+            currentUserAction: key === orderOfPlay[this.declarer],
             availableContracts: getRemainingContracts(this.currentBid),
-            wonTheContract: key === lastDirectionToBid,
             bid: key === direction ? bid : player.bid,
+            declarer: key === this.declarer,
+            dummy: key === this.dummy,
           },
         ]);
 
@@ -191,8 +227,6 @@ class Game {
 
     this.bids = [[direction, bid], ...this.bids];
     this.currentBid = bid;
-
-    console.log(194, this.currentBid, this.bids);
 
     this.players = iterateOverPlayers(this.players, ([key, player]) => [
       key,

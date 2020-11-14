@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { Helmet } from "react-helmet";
 
 import GameContext from "../GameContext";
 import Card from "../components/Card";
@@ -37,12 +36,13 @@ export default () => {
               <Card card={card}></Card>
             ))}
           </div>
-          <Helmet>
-            <meta
-              name="player-cards"
-              content={JSON.stringify(state?.currentPlayer?.cards)}
-            />
-          </Helmet>
+
+        </div>
+      )}
+      {state?.declarer && (
+        <div>
+          <h2>Declarer</h2>
+          <div>{state.declarer}</div>
         </div>
       )}
       {state?.currentBid && (

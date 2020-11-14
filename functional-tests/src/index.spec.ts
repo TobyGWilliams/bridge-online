@@ -42,14 +42,11 @@ test("a game", async () => {
     await page1.goto(URL);
 
     await page1.waitForSelector(CREATE_GAME);
-
     await page1.focus(INPUT_GAME_SEED);
     await page1.keyboard.type(SEED);
-
     await page1.click(CREATE_GAME);
 
     await wait(500);
-
     const gameId = await getGameId(page1);
 
     expect(gameId).not.toEqual("");
@@ -87,17 +84,25 @@ test("a game", async () => {
     expect(await getGameState(page2)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
     expect(await getGameState(page3)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
 
-    const { currentBid, players, currentPlayer } = await getState(page4);
+    const {
+      currentBid,
+      players,
+      currentPlayer: { connectionId, ...currentPlayer },
+      declarer,
+      dummy,
+    } = await getState(page4);
 
+    expect(declarer).toEqual("west");
+    expect(dummy).toEqual("east");
     expect(currentBid).toEqual([4, "NO_TRUMPS"]);
     expect(players).toMatchSnapshot();
-    expect(currentPlayer.wonTheContract).toEqual(true);
+    expect(currentPlayer).toMatchSnapshot();
 
-    await browser.close();
-    return
+    // await browser.close();
+    return;
   } catch (err) {
-    browser.close();
+    // browser.close();
     throw err;
-    return
+    return;
   }
 });
