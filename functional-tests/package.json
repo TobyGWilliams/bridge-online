@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "rm -rf ./screenshots/* && node ./src/index.js"
+    "start": "rm -rf ./screenshots/* && tsc && node ./dist/index.js"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "puppeteer": "^5.3.1"
+  "dependencies": {},
+  "devDependencies": {
+    "playwright": "^1.6.1"
   }
 }
