@@ -57,6 +57,8 @@ const Wrapper = () => {
     >
       <Helmet>
         <meta name="game-id" content={gameState?.gameId} />
+        <meta name="game-state" content={gameState?.state} />
+        <meta name="state" content={JSON.stringify(gameState)} />
       </Helmet>
       <App />
     </GameContext.Provider>

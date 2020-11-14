@@ -36,7 +36,6 @@ const messageHandler = (connectionId, socket) => (message) => {
   }
 
   if (action === "CREATE_GAME") {
-    console.log({ action, data });
     const game = new Game(data.seed);
     const messageCallback = (message) => socket.send(message);
 

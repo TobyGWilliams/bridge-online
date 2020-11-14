@@ -1,7 +1,5 @@
 import { Page } from "playwright";
 
-import logger from "./logger";
-
 import {
   BUTTON_NEW_PLAYER,
   INPUT_PLAYER_NAME,
@@ -9,8 +7,6 @@ import {
 } from "./constants";
 
 export default async (page: Page, playerName: string, direction: string) => {
-  logger(`seat player, name: ${playerName}, direction: ${direction}`);
-
   await page.focus(INPUT_PLAYER_NAME);
   await page.keyboard.type(playerName);
 

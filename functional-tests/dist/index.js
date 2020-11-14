@@ -44,12 +44,13 @@ var add_player_1 = __importDefault(require("./add-player"));
 var seat_player_1 = __importDefault(require("./seat-player"));
 var get_game_id_1 = __importDefault(require("./get-game-id"));
 var check_player_cards_1 = __importDefault(require("./check-player-cards"));
-var constants_1 = require("./constants");
 var logger_1 = __importDefault(require("./logger"));
 var bid_1 = __importDefault(require("./bid"));
+var constants_1 = require("./constants");
+var get_game_state_1 = __importDefault(require("./get-game-state"));
 var SEED = "this is the game seed";
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var browser, page1, gameId, page2, page3, page4;
+    var browser, page1, gameId, page2, page3, page4, gameState1, gameState2, gameState3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -129,6 +130,33 @@ var SEED = "this is the game seed";
                 return [4 /*yield*/, bid_1.default(page4, [4, "NO_TRUMPS"])];
             case 24:
                 _a.sent();
+                return [4 /*yield*/, page1.click(constants_1.BUTTON_PASS)];
+            case 25:
+                _a.sent();
+                return [4 /*yield*/, page2.click(constants_1.BUTTON_PASS)];
+            case 26:
+                _a.sent();
+                return [4 /*yield*/, page3.click(constants_1.BUTTON_PASS)];
+            case 27:
+                _a.sent();
+                return [4 /*yield*/, get_game_state_1.default(page1)];
+            case 28:
+                gameState1 = _a.sent();
+                if (gameState1 !== "LEADING_FIRST_CARD") {
+                    throw new Error("game state incorrect");
+                }
+                return [4 /*yield*/, get_game_state_1.default(page2)];
+            case 29:
+                gameState2 = _a.sent();
+                if (gameState2 !== "LEADING_FIRST_CARD") {
+                    throw new Error("game state incorrect");
+                }
+                return [4 /*yield*/, get_game_state_1.default(page3)];
+            case 30:
+                gameState3 = _a.sent();
+                if (gameState3 !== "LEADING_FIRST_CARD") {
+                    throw new Error("game state incorrect");
+                }
                 console.log("End game\n\n\n");
                 return [2 /*return*/];
         }

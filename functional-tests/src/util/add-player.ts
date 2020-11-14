@@ -1,11 +1,8 @@
 import { Browser } from "playwright";
-import logger from "./logger";
 
 import { BUTTON_JOIN_GAME, CREATE_GAME, INPUT_GAME_ID, URL } from "./constants";
 
 export default async (browser: Browser, gameId: string) => {
-  logger("add player");
-
   const page = await browser.newPage();
 
   await page.goto(URL);

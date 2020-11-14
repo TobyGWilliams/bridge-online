@@ -53,9 +53,33 @@ export default () => {
           </div>
         </div>
       )}
+
+      <div>
+        <h2>Player's Bids</h2>
+        <div>
+          north: <Bid bid={state?.players?.north?.bid} />
+          east:
+          <Bid bid={state?.players?.east?.bid} />
+          south:
+          <Bid bid={state?.players?.south?.bid} />
+          west: <Bid bid={state?.players?.west?.bid} />
+        </div>
+      </div>
+
       {state?.currentPlayer?.availableContracts && (
         <div>
           <h2>Available Contracts</h2>
+          <div>
+            <button
+              onClick={() => {
+                sendMessage("BID", { bid: "PASS" });
+              }}
+              data-test="place-bid"
+              data-test-bid="PASS"
+            >
+              Pass
+            </button>
+          </div>
           <div>
             {state?.currentPlayer?.availableContracts.map((bid) => (
               <button

@@ -1,7 +1,6 @@
 const seedrandom = require("seedrandom");
 
 const shuffle = (array, seed) => {
-  console.log(seed);
   const random = seedrandom(seed);
 
   let m = array.length,

@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.URL = exports.PLAYER4CARDS = exports.PLAYER3CARDS = exports.PLAYER2CARDS = exports.PLAYER1CARDS = exports.SELECT_PLAYER_DIRECTION = exports.INPUT_GAME_SEED = exports.INPUT_PLAYER_NAME = exports.INPUT_GAME_ID = exports.CREATE_GAME = exports.BUTTON_PLACE_BID = exports.BUTTON_BEGIN_GAME = exports.BUTTON_NEW_PLAYER = exports.BUTTON_JOIN_GAME = void 0;
+exports.URL = exports.PLAYER4CARDS = exports.PLAYER3CARDS = exports.PLAYER2CARDS = exports.PLAYER1CARDS = exports.SELECT_PLAYER_DIRECTION = exports.INPUT_GAME_SEED = exports.INPUT_PLAYER_NAME = exports.INPUT_GAME_ID = exports.CREATE_GAME = exports.BUTTON_PASS = exports.BUTTON_PLACE_BID = exports.BUTTON_BEGIN_GAME = exports.BUTTON_NEW_PLAYER = exports.BUTTON_JOIN_GAME = void 0;
 exports.BUTTON_JOIN_GAME = 'button[data-test="join-game"]';
 exports.BUTTON_NEW_PLAYER = 'button[data-test="new-player-submit"]';
 exports.BUTTON_BEGIN_GAME = 'button[data-test="begin-game-button"]';
 exports.BUTTON_PLACE_BID = 'button[data-test="place-bid"]';
+exports.BUTTON_PASS = 'button[data-test="place-bid"][data-test-bid="PASS"]';
 exports.CREATE_GAME = 'button[data-test="create-game"]';
 exports.INPUT_GAME_ID = 'input[data-test="input-game-id"]';
 exports.INPUT_PLAYER_NAME = 'input[data-test="player-name-input"]';

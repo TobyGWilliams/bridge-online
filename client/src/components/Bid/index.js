@@ -9,6 +9,14 @@ const cards = {
 };
 
 export default ({ bid }) => {
+  if (!bid) {
+    return " -";
+  }
+
+  if (bid === "PASS") {
+    return " PASS";
+  }
+
   const [number, suite] = bid;
 
   return (

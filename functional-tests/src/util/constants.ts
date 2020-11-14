@@ -2,11 +2,15 @@ export const BUTTON_JOIN_GAME = 'button[data-test="join-game"]';
 export const BUTTON_NEW_PLAYER = 'button[data-test="new-player-submit"]';
 export const BUTTON_BEGIN_GAME = 'button[data-test="begin-game-button"]';
 export const BUTTON_PLACE_BID = 'button[data-test="place-bid"]';
+export const BUTTON_PASS =
+  'button[data-test="place-bid"][data-test-bid="PASS"]';
 export const CREATE_GAME = 'button[data-test="create-game"]';
 export const INPUT_GAME_ID = 'input[data-test="input-game-id"]';
 export const INPUT_PLAYER_NAME = 'input[data-test="player-name-input"]';
 export const INPUT_GAME_SEED = 'input[data-test="input-seed"]';
 export const SELECT_PLAYER_DIRECTION = 'select[data-test="player-direction"]';
+
+export const GAME_STATE_LEADING_FIRST_CARD = "LEADING_FIRST_CARD";
 
 export const PLAYER1CARDS =
   '[["5","CLUB"],["3","HEART"],["6","CLUB"],["9","SPADE"],["7","DIAMOND"],["7","SPADE"],["2","HEART"],["KING","SPADE"],["5","DIAMOND"],["10","SPADE"],["4","DIAMOND"],["5","HEART"],["8","HEART"]]';

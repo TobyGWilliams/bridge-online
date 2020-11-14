@@ -12,6 +12,7 @@ const App = () => {
   return (
     <div className="App">
       <h1>Bridge-Online</h1>
+      {connected && <h3>Game State: {state?.state}</h3>}
       {connected && !state && <WelcomePage />}
       {connected && state && <Lobby />}
       {connected && state && state?.currentPlayer && <Table />}
