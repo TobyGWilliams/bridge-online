@@ -10,7 +10,7 @@ import "./index.css";
 const App = () => {
   const { state, connected, sendMessage } = useContext(GameContext);
   return (
-    <div className="App">
+    <div className="App" id='application-root'>
       <h1>Bridge-Online</h1>
       {connected && <h3>Game State: {state?.state}</h3>}
       {connected && !state && <WelcomePage />}

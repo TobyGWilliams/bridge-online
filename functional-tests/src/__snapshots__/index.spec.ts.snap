@@ -1,0 +1,339 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`a game 1`] = `
+Object {
+  "east": Object {
+    "availableContracts": Array [
+      Array [
+        5,
+        "CLUB",
+      ],
+      Array [
+        5,
+        "DIAMOND",
+      ],
+      Array [
+        5,
+        "HEART",
+      ],
+      Array [
+        5,
+        "SPADE",
+      ],
+      Array [
+        5,
+        "NO_TRUMPS",
+      ],
+      Array [
+        6,
+        "CLUB",
+      ],
+      Array [
+        6,
+        "DIAMOND",
+      ],
+      Array [
+        6,
+        "HEART",
+      ],
+      Array [
+        6,
+        "SPADE",
+      ],
+      Array [
+        6,
+        "NO_TRUMPS",
+      ],
+      Array [
+        7,
+        "CLUB",
+      ],
+      Array [
+        7,
+        "DIAMOND",
+      ],
+      Array [
+        7,
+        "HEART",
+      ],
+      Array [
+        7,
+        "SPADE",
+      ],
+      Array [
+        7,
+        "NO_TRUMPS",
+      ],
+    ],
+    "bid": "PASS",
+    "currentUserAction": false,
+    "isUser": false,
+    "name": "player2Name",
+    "wonTheContract": false,
+  },
+  "north": Object {
+    "availableContracts": Array [
+      Array [
+        5,
+        "CLUB",
+      ],
+      Array [
+        5,
+        "DIAMOND",
+      ],
+      Array [
+        5,
+        "HEART",
+      ],
+      Array [
+        5,
+        "SPADE",
+      ],
+      Array [
+        5,
+        "NO_TRUMPS",
+      ],
+      Array [
+        6,
+        "CLUB",
+      ],
+      Array [
+        6,
+        "DIAMOND",
+      ],
+      Array [
+        6,
+        "HEART",
+      ],
+      Array [
+        6,
+        "SPADE",
+      ],
+      Array [
+        6,
+        "NO_TRUMPS",
+      ],
+      Array [
+        7,
+        "CLUB",
+      ],
+      Array [
+        7,
+        "DIAMOND",
+      ],
+      Array [
+        7,
+        "HEART",
+      ],
+      Array [
+        7,
+        "SPADE",
+      ],
+      Array [
+        7,
+        "NO_TRUMPS",
+      ],
+    ],
+    "bid": "PASS",
+    "currentUserAction": false,
+    "isUser": false,
+    "name": "player1Name",
+    "wonTheContract": false,
+  },
+  "south": Object {
+    "availableContracts": Array [
+      Array [
+        5,
+        "CLUB",
+      ],
+      Array [
+        5,
+        "DIAMOND",
+      ],
+      Array [
+        5,
+        "HEART",
+      ],
+      Array [
+        5,
+        "SPADE",
+      ],
+      Array [
+        5,
+        "NO_TRUMPS",
+      ],
+      Array [
+        6,
+        "CLUB",
+      ],
+      Array [
+        6,
+        "DIAMOND",
+      ],
+      Array [
+        6,
+        "HEART",
+      ],
+      Array [
+        6,
+        "SPADE",
+      ],
+      Array [
+        6,
+        "NO_TRUMPS",
+      ],
+      Array [
+        7,
+        "CLUB",
+      ],
+      Array [
+        7,
+        "DIAMOND",
+      ],
+      Array [
+        7,
+        "HEART",
+      ],
+      Array [
+        7,
+        "SPADE",
+      ],
+      Array [
+        7,
+        "NO_TRUMPS",
+      ],
+    ],
+    "bid": "PASS",
+    "currentUserAction": false,
+    "isUser": false,
+    "name": "player3Name",
+    "wonTheContract": false,
+  },
+  "west": Object {
+    "availableContracts": Array [
+      Array [
+        5,
+        "CLUB",
+      ],
+      Array [
+        5,
+        "DIAMOND",
+      ],
+      Array [
+        5,
+        "HEART",
+      ],
+      Array [
+        5,
+        "SPADE",
+      ],
+      Array [
+        5,
+        "NO_TRUMPS",
+      ],
+      Array [
+        6,
+        "CLUB",
+      ],
+      Array [
+        6,
+        "DIAMOND",
+      ],
+      Array [
+        6,
+        "HEART",
+      ],
+      Array [
+        6,
+        "SPADE",
+      ],
+      Array [
+        6,
+        "NO_TRUMPS",
+      ],
+      Array [
+        7,
+        "CLUB",
+      ],
+      Array [
+        7,
+        "DIAMOND",
+      ],
+      Array [
+        7,
+        "HEART",
+      ],
+      Array [
+        7,
+        "SPADE",
+      ],
+      Array [
+        7,
+        "NO_TRUMPS",
+      ],
+    ],
+    "bid": Array [
+      4,
+      "NO_TRUMPS",
+    ],
+    "cards": Array [
+      Array [
+        "JACK",
+        "CLUB",
+      ],
+      Array [
+        "2",
+        "SPADE",
+      ],
+      Array [
+        "ACE",
+        "SPADE",
+      ],
+      Array [
+        "2",
+        "DIAMOND",
+      ],
+      Array [
+        "4",
+        "CLUB",
+      ],
+      Array [
+        "9",
+        "HEART",
+      ],
+      Array [
+        "QUEEN",
+        "SPADE",
+      ],
+      Array [
+        "10",
+        "CLUB",
+      ],
+      Array [
+        "KING",
+        "HEART",
+      ],
+      Array [
+        "2",
+        "CLUB",
+      ],
+      Array [
+        "ACE",
+        "CLUB",
+      ],
+      Array [
+        "6",
+        "SPADE",
+      ],
+      Array [
+        "QUEEN",
+        "DIAMOND",
+      ],
+    ],
+    "currentUserAction": true,
+    "isUser": true,
+    "name": "player4Name",
+    "wonTheContract": true,
+  },
+}
+`;

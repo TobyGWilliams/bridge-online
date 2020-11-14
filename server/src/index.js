@@ -5,7 +5,6 @@ const { v4: uuid } = require("uuid");
 const Game = require("./modules/game");
 
 console.clear();
-console.log("-----------------------------");
 
 const gameActions = Object.entries(Game.GAME_ACTIONS).map(
   ([key, value]) => value

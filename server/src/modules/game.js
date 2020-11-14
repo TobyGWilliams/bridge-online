@@ -1,11 +1,8 @@
 const { v4: uuid } = require("uuid");
 
-const sendAction = require("./send-action");
 const { contracts, getRemainingContracts } = require("./bids");
 const { dealCards } = require("./cards");
 const { north, east, south, west } = require("./directions");
-
-const SHORT_DELAY = 1000;
 
 const sendToAll = (connections, callback) => {
   Object.entries(connections).forEach(callback);
@@ -49,6 +46,8 @@ class Game {
     this.state = "LOBBY";
     this.messageSequence = 1;
     this.currentBid = null;
+    this.winningBid = null;
+    this.bids = [];
   }
 
   static GAME_ACTIONS = {
@@ -136,6 +135,7 @@ class Game {
   }
 
   placeBid(bid, direction) {
+    console.log(bid, direction);
     const nextDirectionToPlay = getNextPlayerToPlay(direction);
 
     if (this.state !== "BIDDING") {
@@ -144,10 +144,6 @@ class Game {
 
     if (!this.players[direction].currentUserAction) {
       return;
-    }
-
-    if (bid !== "PASS") {
-      this.currentBid = bid;
     }
 
     if (bid === "PASS") {
@@ -159,15 +155,17 @@ class Game {
         this.players[previous].bid === "PASS" &&
         this.players[previous1].bid === "PASS"
       ) {
-        this.state = "LEADING_FIRST_CARD";
+        const [lastDirectionToBid, lastBid] = this.bids[0];
 
+        this.state = "LEADING_FIRST_CARD";
+        this.winningBid = lastBid;
         this.players = iterateOverPlayers(this.players, ([key, player]) => [
           key,
           {
             ...player,
             currentUserAction: key === orderOfPlay[direction],
             availableContracts: getRemainingContracts(this.currentBid),
-            wonTheContract: key === direction,
+            wonTheContract: key === lastDirectionToBid,
             bid: key === direction ? bid : player.bid,
           },
         ]);
@@ -176,7 +174,24 @@ class Game {
 
         return;
       }
+
+      this.players = iterateOverPlayers(this.players, ([key, player]) => [
+        key,
+        {
+          ...player,
+          currentUserAction: key === nextDirectionToPlay,
+          availableContracts: getRemainingContracts(this.currentBid),
+          bid: key === direction ? bid : player.bid,
+        },
+      ]);
+
+      this.updateClientState();
     }
+
+    this.bids = [[direction, bid], ...this.bids];
+    this.currentBid = bid;
+
+    console.log(182, this.currentBid, this.bids);
 
     this.players = iterateOverPlayers(this.players, ([key, player]) => [
       key,

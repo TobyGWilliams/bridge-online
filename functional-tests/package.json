@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll --detectOpenHandles",
+    "process": "lsof -U +c 15 | cut -f1 -d' ' | sort | uniq -c | sort -rn | head -3"
   },
   "author": "",
   "license": "ISC",

@@ -1,4 +1,4 @@
-import { chromium, Page } from "playwright";
+import { chromium } from "playwright";
 
 import addPlayer from "./util/add-player";
 import seatPlayer from "./util/seat-player";
@@ -7,6 +7,9 @@ import bid from "./util/bid";
 import getGameState from "./util/get-game-state";
 import getCards from "./util/get-cards";
 import getState from "./util/get-state";
+import wait from "./util/wait";
+
+import { writeLog } from "./util/logger";
 
 import {
   BUTTON_BEGIN_GAME,
@@ -21,17 +24,17 @@ import {
   GAME_STATE_LEADING_FIRST_CARD,
 } from "./util/constants";
 
-const wait = (duration: number) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, duration);
-  });
-
 const SEED = "this is the game seed";
 
 test("a game", async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    headless: false,
+    timeout: 1000,
+    logger: {
+      isEnabled: () => true,
+      log: (name, severity, message, args) => writeLog(message as string, 2),
+    },
+  });
 
   try {
     const page1 = await browser.newPage();
@@ -45,11 +48,17 @@ test("a game", async () => {
 
     await page1.click(CREATE_GAME);
 
+    await wait(500);
+
     const gameId = await getGameId(page1);
+
+    expect(gameId).not.toEqual("");
 
     const page2 = await addPlayer(browser, gameId as string);
     const page3 = await addPlayer(browser, gameId as string);
     const page4 = await addPlayer(browser, gameId as string);
+
+    await wait(500);
 
     await seatPlayer(page1, "player1Name", "north");
     await seatPlayer(page2, "player2Name", "east");
@@ -72,17 +81,23 @@ test("a game", async () => {
     await page2.click(BUTTON_PASS);
     await page3.click(BUTTON_PASS);
 
-    await wait(1000);
+    await wait(500);
 
     expect(await getGameState(page1)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
     expect(await getGameState(page2)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
     expect(await getGameState(page3)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
 
-    expect(await getState(page4)).toEqual({});
+    const { currentBid, players, currentPlayer } = await getState(page4);
+
+    expect(currentBid).toEqual([4, "NO_TRUMPS"]);
+    expect(players).toMatchSnapshot();
+    expect(currentPlayer.wonTheContract).toEqual(true);
 
     await browser.close();
+    return
   } catch (err) {
     browser.close();
     throw err;
+    return
   }
 });
