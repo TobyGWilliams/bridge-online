@@ -186,12 +186,13 @@ class Game {
       ]);
 
       this.updateClientState();
+      return;
     }
 
     this.bids = [[direction, bid], ...this.bids];
     this.currentBid = bid;
 
-    console.log(182, this.currentBid, this.bids);
+    console.log(194, this.currentBid, this.bids);
 
     this.players = iterateOverPlayers(this.players, ([key, player]) => [
       key,
