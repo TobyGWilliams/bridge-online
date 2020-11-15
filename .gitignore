@@ -2,3 +2,5 @@ server/node_modules
 client/node_modules
 functional-tests/node_modules
 functional-tests/screenshots
+functional-tests/dist
+functional-tests/src/util/debug.log

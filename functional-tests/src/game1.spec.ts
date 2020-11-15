@@ -23,6 +23,7 @@ import {
   BUTTON_PASS,
   GAME_STATE_LEADING_FIRST_CARD,
 } from "./util/constants";
+import createGame from "./util/create-game";
 
 const SEED = "this is the game seed";
 
@@ -38,18 +39,7 @@ test("a game", async () => {
 
   try {
     const page1 = await browser.newPage();
-
-    await page1.goto(URL);
-
-    await page1.waitForSelector(CREATE_GAME);
-    await page1.focus(INPUT_GAME_SEED);
-    await page1.keyboard.type(SEED);
-    await page1.click(CREATE_GAME);
-
-    await wait(500);
-    const gameId = await getGameId(page1);
-
-    expect(gameId).not.toEqual("");
+    const gameId = await createGame(page1, SEED);
 
     const page2 = await addPlayer(browser, gameId as string);
     const page3 = await addPlayer(browser, gameId as string);
