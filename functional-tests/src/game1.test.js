@@ -2,7 +2,7 @@ Feature("Game 1 Bid Up No Trumps");
 
 Scenario("test something", async ({ I }) => {
   I.amOnPage("/");
-
+  
   I.fillField('input[data-test="input-seed"]', "this is the game seed");
   I.click('button[data-test="create-game"]');
 
@@ -13,8 +13,6 @@ Scenario("test something", async ({ I }) => {
       .querySelector('head > meta[name="game-id"]')
       .getAttribute("content")
   );
-
-  pause();
 
   I.openNewTab();
   I.amOnPage("/");
