@@ -5,33 +5,76 @@ Object {
   "east": Object {
     "availableContracts": Array [
       Array [
-        3,
-        "SPADE",
-      ],
-      Array [
-        3,
-        "NO_TRUMPS",
-      ],
-      Array [
-        4,
+        5,
         "CLUB",
       ],
       Array [
-        4,
+        5,
         "DIAMOND",
       ],
       Array [
-        4,
+        5,
         "HEART",
       ],
       Array [
-        4,
+        5,
         "SPADE",
       ],
       Array [
-        4,
+        5,
         "NO_TRUMPS",
       ],
+      Array [
+        6,
+        "CLUB",
+      ],
+      Array [
+        6,
+        "DIAMOND",
+      ],
+      Array [
+        6,
+        "HEART",
+      ],
+      Array [
+        6,
+        "SPADE",
+      ],
+      Array [
+        6,
+        "NO_TRUMPS",
+      ],
+      Array [
+        7,
+        "CLUB",
+      ],
+      Array [
+        7,
+        "DIAMOND",
+      ],
+      Array [
+        7,
+        "HEART",
+      ],
+      Array [
+        7,
+        "SPADE",
+      ],
+      Array [
+        7,
+        "NO_TRUMPS",
+      ],
+    ],
+    "bid": "PASS",
+    "currentUserAction": false,
+    "declarer": false,
+    "dummy": true,
+    "isUser": false,
+    "name": "player2Name",
+    "numberOfCardsHeld": 13,
+  },
+  "north": Object {
+    "availableContracts": Array [
       Array [
         5,
         "CLUB",
@@ -98,39 +141,11 @@ Object {
     "declarer": false,
     "dummy": false,
     "isUser": false,
-    "name": "player2Name",
+    "name": "player1Name",
     "numberOfCardsHeld": 13,
   },
-  "north": Object {
+  "south": Object {
     "availableContracts": Array [
-      Array [
-        3,
-        "SPADE",
-      ],
-      Array [
-        3,
-        "NO_TRUMPS",
-      ],
-      Array [
-        4,
-        "CLUB",
-      ],
-      Array [
-        4,
-        "DIAMOND",
-      ],
-      Array [
-        4,
-        "HEART",
-      ],
-      Array [
-        4,
-        "SPADE",
-      ],
-      Array [
-        4,
-        "NO_TRUMPS",
-      ],
       Array [
         5,
         "CLUB",
@@ -194,42 +209,14 @@ Object {
     ],
     "bid": "PASS",
     "currentUserAction": false,
-    "declarer": true,
+    "declarer": false,
     "dummy": false,
     "isUser": false,
-    "name": "player1Name",
+    "name": "player3Name",
     "numberOfCardsHeld": 13,
   },
-  "south": Object {
+  "west": Object {
     "availableContracts": Array [
-      Array [
-        3,
-        "SPADE",
-      ],
-      Array [
-        3,
-        "NO_TRUMPS",
-      ],
-      Array [
-        4,
-        "CLUB",
-      ],
-      Array [
-        4,
-        "DIAMOND",
-      ],
-      Array [
-        4,
-        "HEART",
-      ],
-      Array [
-        4,
-        "SPADE",
-      ],
-      Array [
-        4,
-        "NO_TRUMPS",
-      ],
       Array [
         5,
         "CLUB",
@@ -292,108 +279,9 @@ Object {
       ],
     ],
     "bid": Array [
-      3,
-      "HEART",
+      4,
+      "NO_TRUMPS",
     ],
-    "currentUserAction": false,
-    "declarer": false,
-    "dummy": true,
-    "isUser": false,
-    "name": "player3Name",
-    "numberOfCardsHeld": 13,
-  },
-  "west": Object {
-    "availableContracts": Array [
-      Array [
-        3,
-        "SPADE",
-      ],
-      Array [
-        3,
-        "NO_TRUMPS",
-      ],
-      Array [
-        4,
-        "CLUB",
-      ],
-      Array [
-        4,
-        "DIAMOND",
-      ],
-      Array [
-        4,
-        "HEART",
-      ],
-      Array [
-        4,
-        "SPADE",
-      ],
-      Array [
-        4,
-        "NO_TRUMPS",
-      ],
-      Array [
-        5,
-        "CLUB",
-      ],
-      Array [
-        5,
-        "DIAMOND",
-      ],
-      Array [
-        5,
-        "HEART",
-      ],
-      Array [
-        5,
-        "SPADE",
-      ],
-      Array [
-        5,
-        "NO_TRUMPS",
-      ],
-      Array [
-        6,
-        "CLUB",
-      ],
-      Array [
-        6,
-        "DIAMOND",
-      ],
-      Array [
-        6,
-        "HEART",
-      ],
-      Array [
-        6,
-        "SPADE",
-      ],
-      Array [
-        6,
-        "NO_TRUMPS",
-      ],
-      Array [
-        7,
-        "CLUB",
-      ],
-      Array [
-        7,
-        "DIAMOND",
-      ],
-      Array [
-        7,
-        "HEART",
-      ],
-      Array [
-        7,
-        "SPADE",
-      ],
-      Array [
-        7,
-        "NO_TRUMPS",
-      ],
-    ],
-    "bid": "PASS",
     "cards": Array [
       Array [
         "JACK",
@@ -449,7 +337,7 @@ Object {
       ],
     ],
     "currentUserAction": false,
-    "declarer": false,
+    "declarer": true,
     "dummy": false,
     "isUser": true,
     "name": "player4Name",
@@ -461,34 +349,6 @@ Object {
 exports[`a game 2`] = `
 Object {
   "availableContracts": Array [
-    Array [
-      3,
-      "SPADE",
-    ],
-    Array [
-      3,
-      "NO_TRUMPS",
-    ],
-    Array [
-      4,
-      "CLUB",
-    ],
-    Array [
-      4,
-      "DIAMOND",
-    ],
-    Array [
-      4,
-      "HEART",
-    ],
-    Array [
-      4,
-      "SPADE",
-    ],
-    Array [
-      4,
-      "NO_TRUMPS",
-    ],
     Array [
       5,
       "CLUB",
@@ -550,7 +410,10 @@ Object {
       "NO_TRUMPS",
     ],
   ],
-  "bid": "PASS",
+  "bid": Array [
+    4,
+    "NO_TRUMPS",
+  ],
   "cards": Array [
     Array [
       "JACK",
@@ -606,7 +469,7 @@ Object {
     ],
   ],
   "currentUserAction": false,
-  "declarer": false,
+  "declarer": true,
   "direction": "west",
   "dummy": false,
   "name": "player4Name",

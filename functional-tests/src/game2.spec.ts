@@ -55,13 +55,14 @@ test("a game", async () => {
     expect(await getCards(page3)).toEqual(PLAYER3CARDS);
     expect(await getCards(page4)).toEqual(PLAYER4CARDS);
 
-    await bid(page1, [1, "HEART"]);
-    await bid(page2, [2, "SPADE"]);
-    await bid(page3, [3, "HEART"]);
+    await bid(page1, [1, "NO_TRUMPS"]);
+    await bid(page2, [2, "NO_TRUMPS"]);
+    await bid(page3, [3, "NO_TRUMPS"]);
+    await bid(page4, [4, "NO_TRUMPS"]);
 
-    await page4.click(BUTTON_PASS);
     await page1.click(BUTTON_PASS);
     await page2.click(BUTTON_PASS);
+    await page3.click(BUTTON_PASS);
 
     await wait(500);
 
@@ -77,9 +78,9 @@ test("a game", async () => {
       dummy,
     } = await getState(page4);
 
-    expect(declarer).toEqual("north");
-    expect(dummy).toEqual("south");
-    expect(currentBid).toEqual([3, "HEART"]);
+    expect(declarer).toEqual("west");
+    expect(dummy).toEqual("east");
+    expect(currentBid).toEqual([4, "NO_TRUMPS"]);
     expect(players).toMatchSnapshot();
     expect(currentPlayer).toMatchSnapshot();
 

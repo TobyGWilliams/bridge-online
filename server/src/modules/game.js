@@ -183,9 +183,9 @@ class Game {
         const winningPartners = partners[lastDirectionToBid];
 
         const winningBids = this.bids.filter(
-          ([direction, [contract, suit]]) =>
-            partners[direction] === winningPartners &&
-            contract === winningContract
+          ([direction, [contract, suit]]) => (
+            partners[direction] === winningPartners && suit === winningSuit
+          )
         );
 
         const [declarer] = winningBids[winningBids.length - 1];
@@ -194,6 +194,7 @@ class Game {
         this.winningBid = lastBid;
         this.declarer = declarer;
         this.dummy = oppositePartner[this.declarer];
+
         this.players = iterateOverPlayers(this.players, ([key, player]) => [
           key,
           {
