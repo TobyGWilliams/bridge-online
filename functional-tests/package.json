@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "codeceptjs run --steps",
-    "startheadless": "HEADLESS=true codeceptjs run --steps",
-    "startui": "codecept-ui --app",
-    "startdemo": "codeceptjs run --steps -c node_modules/@codeceptjs/examples",
-    "startdemo:headless": "HEADLESS=true codeceptjs run --steps -c node_modules/@codeceptjs/examples",
-    "startdemo:ui": "codecept-ui --app  -c node_modules/@codeceptjs/examples"
+    "start:headless": "HEADLESS=true codeceptjs run --steps",
+    "start:ui": "codecept-ui --app",
+    "start:demo": "codeceptjs run --steps -c node_modules/@codeceptjs/examples",
+    "start:demo:headless": "HEADLESS=true codeceptjs run --steps -c node_modules/@codeceptjs/examples",
+    "start:demo:ui": "codecept-ui --app  -c node_modules/@codeceptjs/examples"
   },
   "author": "",
   "license": "ISC",
@@ -18,9 +18,7 @@
     "@codeceptjs/configure": "^0.6.2",
     "@codeceptjs/examples": "^1.2.1",
     "@codeceptjs/ui": "^0.4.2",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^14.14.7",
-    "codeceptjs": "^3.0.0",
+    "codeceptjs": "^3.0.1",
     "playwright": "^1.6.1",
     "typescript": "^4.0.5"
   }
