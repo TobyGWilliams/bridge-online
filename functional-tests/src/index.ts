@@ -1,17 +1,20 @@
+import setup from "./test-runner/setup";
+import run from "./test-runner";
+
 import game1 from "./game1";
 import game2 from "./game2";
-import getBrowser from "./util/get-browser";
-import { log } from "./logger";
+import game3 from "./game3";
+
+
+const testFiles = [game1, game2, game3];
+
+async function* gen() {
+  yield await setup(game1);
+  yield await setup(game2);
+  yield await setup(game3);
+}
 
 (async function () {
-  const browser = await log(getBrowser, "setup", 1);
-
-  try {
-    await log(() => game1(browser), "game-1", 1);
-    await log(() => game2(browser), "game-2", 1);
-    await log(() => browser.close(), "teardown", 1);
-  } catch (err) {
-    browser.close();
-    throw err;
-  }
+  // @ts-ignore
+  run(gen());
 })();
