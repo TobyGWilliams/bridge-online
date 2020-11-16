@@ -1,12 +1,10 @@
 import { Browser } from "playwright";
 
-import { writeLog } from "./logger";
+import { log } from "../logger";
 
 import { BUTTON_JOIN_GAME, INPUT_GAME_ID, URL } from "./constants";
 
-export default async (browser: Browser, gameId: string) => {
-  writeLog(`== add player started - ${gameId}`);
-
+const addPlayer = async (browser: Browser, gameId: string) => {
   const page = await browser.newPage();
 
   await page.bringToFront();
@@ -16,10 +14,13 @@ export default async (browser: Browser, gameId: string) => {
   await page.keyboard.type(gameId);
   await page.click(BUTTON_JOIN_GAME);
 
-
   const content = await page.textContent("#application-root");
-  expect(content).toContain("Welcome to your game");
 
-  writeLog("== add player succeeded");
+  // expect(content).toContain("Welcome to your game");
+
   return page;
 };
+
+export default (...props: any) =>
+  // @ts-ignore
+  log(() => addPlayer(...props), "add player");

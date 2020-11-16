@@ -1,10 +1,10 @@
 import { Page } from "playwright";
 import getBidButtonByBid from "./get-bid-button-by-bid";
-import { writeLog } from "./logger";
+import { log } from "../logger";
 
-export default async (page: Page, bid: [number, string]) => {
-  writeLog(`== bid started - ${bid}`);
-  await page.click(getBidButtonByBid(bid));
-  writeLog(`== bid successful - ${bid}`);
-  return;
-};
+const bid = async (page: Page, bid: [number, string]) =>
+  page.click(getBidButtonByBid(bid));
+
+export default (...props: any) =>
+  // @ts-ignore
+  log(() => bid(...props), "bid");

@@ -1,10 +1,17 @@
-import { Page } from "playwright";
+import { Browser, Page } from "playwright";
 
-import { CREATE_GAME, INPUT_GAME_SEED, URL } from "./constants";
 import getGameId from "./get-game-id";
 import wait from "./wait";
+import { log } from "../logger";
 
-export default async (page1: Page, SEED: string): Promise<string> => {
+import { CREATE_GAME, INPUT_GAME_SEED, URL } from "./constants";
+
+const createGame = async function (
+  browser: Browser,
+  SEED: string
+): Promise<{ gameId: string; page1: Page }> {
+  const page1 = await browser.newPage();
+
   await page1.goto(URL);
 
   await page1.waitForSelector(CREATE_GAME);
@@ -16,7 +23,10 @@ export default async (page1: Page, SEED: string): Promise<string> => {
 
   const gameId = await getGameId(page1);
 
-  expect(gameId).not.toEqual("");
-
-  return gameId as string;
+  // expect(gameId).not.toEqual("");
+  return { gameId: gameId as string, page1 };
 };
+
+export default (...props: any) =>
+  // @ts-ignore
+  log(() => createGame(...props), "create game");
