@@ -2,7 +2,7 @@ import { Browser } from "playwright";
 
 import { log } from "../logger";
 
-import { BUTTON_JOIN_GAME, INPUT_GAME_ID, URL } from "./constants";
+import { BUTTON_JOIN_GAME, INPUT_GAME_ID, URL } from "../constants/selectors";
 
 const addPlayer = async (browser: Browser, gameId: string) => {
   const page = await browser.newPage();

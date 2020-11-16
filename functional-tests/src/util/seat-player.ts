@@ -6,7 +6,7 @@ import {
   BUTTON_NEW_PLAYER,
   INPUT_PLAYER_NAME,
   SELECT_PLAYER_DIRECTION,
-} from "./constants";
+} from "../constants/selectors";
 
 const seatPlayer = async (
   page: Page,

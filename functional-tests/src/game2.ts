@@ -18,7 +18,7 @@ import {
   PLAYER4CARDS,
   BUTTON_PASS,
   GAME_STATE_LEADING_FIRST_CARD,
-} from "./util/constants";
+} from "./constants/selectors";
 import createGame from "./util/create-game";
 
 const SEED = "this is the game seed";

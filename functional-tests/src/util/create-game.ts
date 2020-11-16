@@ -4,7 +4,7 @@ import getGameId from "./get-game-id";
 import wait from "./wait";
 import { log } from "../logger";
 
-import { CREATE_GAME, INPUT_GAME_SEED, URL } from "./constants";
+import { CREATE_GAME, INPUT_GAME_SEED, URL } from "../constants/selectors";
 
 const createGame = async function (
   browser: Browser,
