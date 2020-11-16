@@ -4,7 +4,7 @@ import { log } from "../logger";
 
 import { BUTTON_JOIN_GAME, INPUT_GAME_ID, URL } from "../constants/selectors";
 
-const addPlayer = async (browser: Browser, gameId: string) => {
+async function addPlayer(browser: Browser, gameId: string) {
   const page = await browser.newPage();
 
   await page.bringToFront();
@@ -17,9 +17,8 @@ const addPlayer = async (browser: Browser, gameId: string) => {
   const content = await page.textContent("#application-root");
 
   // expect(content).toContain("Welcome to your game");
-
   return page;
-};
+}
 
 export default (...props: any) =>
   // @ts-ignore
