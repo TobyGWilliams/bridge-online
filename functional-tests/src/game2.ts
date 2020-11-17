@@ -1,7 +1,7 @@
 import { Browser, chromium } from "playwright";
 
 import addPlayer from "./util/add-player";
-import seatPlayer from "./util/seat-player";
+import seatPlayer from "./sagas/seat-player";
 import bid from "./util/bid";
 import getGameState from "./util/get-game-state";
 import getCards from "./util/get-cards";
@@ -19,12 +19,12 @@ import {
   BUTTON_PASS,
   GAME_STATE_LEADING_FIRST_CARD,
 } from "./constants/selectors";
-import createGame from "./util/create-game";
+import createGame from "./sagas/create-game";
 
 const SEED = "this is the game seed";
 
-export default async function* (browser: Browser) {
-  const { gameId, page1 } = yield createGame(browser, SEED);
+export default function* (browser: Browser) {
+  const { gameId, page1 } = yield* createGame(browser, SEED);
 
   const page2 = yield addPlayer(browser, gameId as string);
   const page3 = yield addPlayer(browser, gameId as string);
@@ -32,10 +32,10 @@ export default async function* (browser: Browser) {
 
   yield wait(500);
 
-  yield seatPlayer(page1, "player1Name", "north");
-  yield seatPlayer(page2, "player2Name", "east");
-  yield seatPlayer(page3, "player3Name", "south");
-  yield seatPlayer(page4, "player4Name", "west");
+  yield* seatPlayer(page1, "player1Name", "north");
+  yield* seatPlayer(page2, "player2Name", "east");
+  yield* seatPlayer(page3, "player3Name", "south");
+  yield* seatPlayer(page4, "player4Name", "west");
 
   yield page1.click(BUTTON_BEGIN_GAME);
 

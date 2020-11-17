@@ -2,8 +2,8 @@ import { chromium } from "playwright";
 
 import logger, { log } from "../logger";
 
-const getBrowser = async () =>
-  await chromium.launch({
+const getBrowser = () =>
+  chromium.launch({
     headless: false,
     timeout: 1000,
     logger: {
@@ -12,6 +12,8 @@ const getBrowser = async () =>
     },
   });
 
-export default (...props: any) =>
-  // @ts-ignore
-  log(() => getBrowser(...props), "get browser");
+// export default (...props: any) =>
+//   // @ts-ignore
+//   log(() => getBrowser(...props), "get browser");
+
+export default getBrowser;
