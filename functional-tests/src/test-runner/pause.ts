@@ -5,12 +5,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.on("close", () => {
-  console.log(`Close!`);
-});
-
 export function close() {
-  console.log("close rl");
   rl.close();
 }
 

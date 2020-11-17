@@ -1,14 +1,13 @@
 import { Browser } from "playwright";
 
-import addPlayer from "./util/add-player";
+import createGame from "./sagas/create-game";
 import seatPlayer from "./sagas/seat-player";
+
+import addPlayer from "./util/add-player";
 import bid from "./util/bid";
-import getState from "./util/get-state";
 import wait from "./util/wait";
 
 import { BUTTON_BEGIN_GAME, BUTTON_PASS } from "./constants/selectors";
-import createGame from "./sagas/create-game";
-import pause from "./test-runner/pause";
 
 const SEED = "this is the game seed";
 
@@ -37,15 +36,9 @@ export default function* (browser: Browser) {
   yield bid(page2, [2, "SPADE"]);
   yield bid(page3, [3, "HEART"]);
 
-  yield pause()
-
   yield page4.click(BUTTON_PASS);
   yield page1.click(BUTTON_PASS);
   yield page2.click(BUTTON_PASS);
-
-  yield pause()
-
-  console.log("end of test");
 
   // yield wait(500);
 

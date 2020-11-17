@@ -13,6 +13,8 @@ function* gen() {
 }
 
 (async function () {
+  console.clear();
+
   // @ts-ignore
   await run(gen());
 

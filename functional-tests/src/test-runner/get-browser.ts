@@ -17,3 +17,4 @@ const getBrowser = () =>
 //   log(() => getBrowser(...props), "get browser");
 
 export default getBrowser;
+

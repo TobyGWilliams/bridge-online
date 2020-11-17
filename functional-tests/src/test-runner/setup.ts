@@ -1,6 +1,6 @@
 import { Browser } from "playwright";
 
-import getBrowser from "../sagas/get-browser";
+import getBrowser from "./get-browser";
 import { log } from "../logger";
 
 export default function* setup(
