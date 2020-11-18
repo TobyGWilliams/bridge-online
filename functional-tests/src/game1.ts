@@ -7,17 +7,22 @@ import seatPlayer from "./sagas/seat-player";
 import addPlayer from "./util/add-player";
 import bid from "./util/bid";
 import wait from "./util/wait";
+import getCards from "./util/get-cards";
 
 import {
   BUTTON_BEGIN_GAME,
   BUTTON_PASS,
+  GAME_STATE_LEADING_FIRST_CARD,
   PLAYER1CARDS,
+  PLAYER2CARDS,
+  PLAYER3CARDS,
+  PLAYER4CARDS,
 } from "./constants/selectors";
-import getCards from "./util/get-cards";
+import getGameState from "./util/get-game-state";
 
 const SEED = "this is the game seed";
 
-export default function* (browser: Browser) {
+function* test(browser: Browser) {
   const { page1, gameId } = yield* createGame(browser, SEED);
   yield* seatPlayer(page1, "player1Name", "north");
 
@@ -35,11 +40,9 @@ export default function* (browser: Browser) {
   yield page1.click(BUTTON_BEGIN_GAME);
 
   assert(yield getCards(page1), PLAYER1CARDS);
-
-  // expect(yield getCards(page1)).toEqual(PLAYER1CARDS);
-  // expect(yield getCards(page2)).toEqual(PLAYER2CARDS);
-  // expect(yield getCards(page3)).toEqual(PLAYER3CARDS);
-  // expect(yield getCards(page4)).toEqual(PLAYER4CARDS);
+  assert(yield getCards(page2), PLAYER2CARDS);
+  assert(yield getCards(page3), PLAYER3CARDS);
+  assert(yield getCards(page4), PLAYER4CARDS);
 
   yield bid(page1, [1, "HEART"]);
   yield bid(page2, [2, "SPADE"]);
@@ -49,9 +52,11 @@ export default function* (browser: Browser) {
   yield page1.click(BUTTON_PASS);
   yield page2.click(BUTTON_PASS);
 
-  // // expect(yield getGameState(page1)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
-  // // expect(yield getGameState(page2)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
-  // // expect(yield getGameState(page3)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
+  assert(yield getGameState(page1), GAME_STATE_LEADING_FIRST_CARD);
+  assert(yield getGameState(page2), GAME_STATE_LEADING_FIRST_CARD);
+  assert(yield getGameState(page3), GAME_STATE_LEADING_FIRST_CARD);
+  assert(yield getGameState(page4), GAME_STATE_LEADING_FIRST_CARD);
+  
   // const {
   //   currentBid,
   //   players,
@@ -66,3 +71,8 @@ export default function* (browser: Browser) {
   // expect(players).toMatchSnapshot();
   // expect(currentPlayer).toMatchSnapshot();
 }
+
+export default {
+  name: "Bid hearts and spades",
+  test,
+};

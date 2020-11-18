@@ -16,3 +16,9 @@ export function write(message: string) {
 export function close() {
   rl.close();
 }
+
+export function updateLine(message: string) {
+  readline.clearLine(process.stdout, 0);
+  readline.cursorTo(process.stdout, 0, undefined);
+  write(message);
+}

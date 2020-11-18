@@ -2,19 +2,24 @@ import { Browser } from "playwright";
 
 import getBrowser from "./get-browser";
 import { log } from "../logger";
+import { updateLine, write } from "./readline";
 
-export default function* setup(
-  func: (browser: Browser) => Generator
-): Generator {
+type TestFile = {
+  test: (browser: Browser) => Generator;
+  name: string;
+};
+
+export default function* setup({ test, name }: TestFile): Generator {
+  write(`\n\tTEST: ${name}`);
   const browser: any = yield getBrowser();
-  // const browser = await log(getBrowser, "setup", 1);
 
   try {
-    yield* func(browser);
+    yield* test(browser);
   } catch (error) {
+    updateLine(`\tFAIL: ${name}`);
     yield browser.close();
     throw error;
   }
-
+  updateLine(`\tPASS: ${name}`);
   yield browser.close();
 }

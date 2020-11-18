@@ -9,7 +9,7 @@ import createGame from "./sagas/create-game";
 
 const SEED = "this is the game seed";
 
-export default function* (browser: Browser) {
+function* test(browser: Browser) {
   const { page1, gameId } = yield* createGame(browser, SEED);
   yield* seatPlayer(page1, "player1Name", "north");
 
@@ -26,3 +26,8 @@ export default function* (browser: Browser) {
 
   yield page1.click(BUTTON_BEGIN_GAME);
 }
+
+export default {
+  test,
+  name: "Just start the game",
+};

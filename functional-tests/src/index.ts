@@ -13,11 +13,11 @@ function* gen() {
 }
 
 (async function () {
-  write("\n\nBegin Tests\n\n");
+  write("\n\nBegin Tests\n");
 
   // @ts-ignore
   await run(gen());
 
-  write("\nTests Finished\n\n");
+  write("\n\nTests Finished\n\n");
   close();
 })();

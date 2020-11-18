@@ -23,7 +23,7 @@ import createGame from "./sagas/create-game";
 
 const SEED = "this is the game seed";
 
-export default function* (browser: Browser) {
+function* test(browser: Browser) {
   const { gameId, page1 } = yield* createGame(browser, SEED);
 
   const page2 = yield addPlayer(browser, gameId as string);
@@ -71,4 +71,9 @@ export default function* (browser: Browser) {
   // expect(players).toMatchSnapshot();
   // expect(currentPlayer).toMatchSnapshot();
   // yield browser.close();
+}
+
+export default {
+  name: "Bid trumps",
+  test,
 };
