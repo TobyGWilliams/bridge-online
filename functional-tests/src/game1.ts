@@ -1,4 +1,5 @@
 import { Browser } from "playwright";
+import assert from "assert";
 
 import createGame from "./sagas/create-game";
 import seatPlayer from "./sagas/seat-player";
@@ -7,7 +8,12 @@ import addPlayer from "./util/add-player";
 import bid from "./util/bid";
 import wait from "./util/wait";
 
-import { BUTTON_BEGIN_GAME, BUTTON_PASS } from "./constants/selectors";
+import {
+  BUTTON_BEGIN_GAME,
+  BUTTON_PASS,
+  PLAYER1CARDS,
+} from "./constants/selectors";
+import getCards from "./util/get-cards";
 
 const SEED = "this is the game seed";
 
@@ -28,10 +34,13 @@ export default function* (browser: Browser) {
 
   yield page1.click(BUTTON_BEGIN_GAME);
 
+  assert(yield getCards(page1), PLAYER1CARDS);
+
   // expect(yield getCards(page1)).toEqual(PLAYER1CARDS);
   // expect(yield getCards(page2)).toEqual(PLAYER2CARDS);
   // expect(yield getCards(page3)).toEqual(PLAYER3CARDS);
   // expect(yield getCards(page4)).toEqual(PLAYER4CARDS);
+
   yield bid(page1, [1, "HEART"]);
   yield bid(page2, [2, "SPADE"]);
   yield bid(page3, [3, "HEART"]);
@@ -39,8 +48,6 @@ export default function* (browser: Browser) {
   yield page4.click(BUTTON_PASS);
   yield page1.click(BUTTON_PASS);
   yield page2.click(BUTTON_PASS);
-
-  // yield wait(500);
 
   // // expect(yield getGameState(page1)).toEqual(GAME_STATE_LEADING_FIRST_CARD);
   // // expect(yield getGameState(page2)).toEqual(GAME_STATE_LEADING_FIRST_CARD);

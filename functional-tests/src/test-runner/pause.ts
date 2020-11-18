@@ -1,18 +1,9 @@
-import readline from "readline";
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-export function close() {
-  rl.close();
-}
+import { on, write } from "./readline";
 
 export default () => {
-  rl.write("test execution paused - use Enter to resume execution");
+  write("\n\ttest execution paused\n\tuse enter to resume ");
   return new Promise((resolve) => {
-    rl.on("line", () => {
+    on("line", () => {
       resolve();
     });
   });

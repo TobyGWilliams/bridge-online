@@ -1,6 +1,6 @@
 import setup from "./test-runner/setup";
 import run from "./test-runner";
-import { close } from "./test-runner/pause";
+import { close, write } from "./test-runner/readline";
 
 import game1 from "./game1";
 import game2 from "./game2";
@@ -13,11 +13,11 @@ function* gen() {
 }
 
 (async function () {
-  console.clear();
+  write("\n\nBegin Tests\n\n");
 
   // @ts-ignore
   await run(gen());
 
-  // @ts-check
+  write("\nTests Finished\n\n");
   close();
 })();

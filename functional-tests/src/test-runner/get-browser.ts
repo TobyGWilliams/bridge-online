@@ -4,7 +4,7 @@ import logger, { log } from "../logger";
 
 const getBrowser = () =>
   chromium.launch({
-    headless: false,
+    headless: true,
     timeout: 1000,
     logger: {
       isEnabled: () => true,
@@ -17,4 +17,3 @@ const getBrowser = () =>
 //   log(() => getBrowser(...props), "get browser");
 
 export default getBrowser;
-
