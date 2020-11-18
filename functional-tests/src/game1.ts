@@ -1,5 +1,5 @@
 import { Browser } from "playwright";
-import assert from "assert";
+import { deepStrictEqual } from "assert";
 
 import createGame from "./sagas/create-game";
 import seatPlayer from "./sagas/seat-player";
@@ -19,6 +19,7 @@ import {
   PLAYER4CARDS,
 } from "./constants/selectors";
 import getGameState from "./util/get-game-state";
+import getState from "./util/get-state";
 
 const SEED = "this is the game seed";
 
@@ -39,10 +40,10 @@ function* test(browser: Browser) {
 
   yield page1.click(BUTTON_BEGIN_GAME);
 
-  assert(yield getCards(page1), PLAYER1CARDS);
-  assert(yield getCards(page2), PLAYER2CARDS);
-  assert(yield getCards(page3), PLAYER3CARDS);
-  assert(yield getCards(page4), PLAYER4CARDS);
+  deepStrictEqual(yield getCards(page1), PLAYER1CARDS);
+  deepStrictEqual(yield getCards(page2), PLAYER2CARDS);
+  deepStrictEqual(yield getCards(page3), PLAYER3CARDS);
+  deepStrictEqual(yield getCards(page4), PLAYER4CARDS);
 
   yield bid(page1, [1, "HEART"]);
   yield bid(page2, [2, "SPADE"]);
@@ -52,24 +53,16 @@ function* test(browser: Browser) {
   yield page1.click(BUTTON_PASS);
   yield page2.click(BUTTON_PASS);
 
-  assert(yield getGameState(page1), GAME_STATE_LEADING_FIRST_CARD);
-  assert(yield getGameState(page2), GAME_STATE_LEADING_FIRST_CARD);
-  assert(yield getGameState(page3), GAME_STATE_LEADING_FIRST_CARD);
-  assert(yield getGameState(page4), GAME_STATE_LEADING_FIRST_CARD);
-  
-  // const {
-  //   currentBid,
-  //   players,
-  //   currentPlayer: { connectionId, ...currentPlayer },
-  //   declarer,
-  //   dummy,
-  // } = yield getState(page4);
+  deepStrictEqual(yield getGameState(page1), GAME_STATE_LEADING_FIRST_CARD);
+  deepStrictEqual(yield getGameState(page2), GAME_STATE_LEADING_FIRST_CARD);
+  deepStrictEqual(yield getGameState(page3), GAME_STATE_LEADING_FIRST_CARD);
+  deepStrictEqual(yield getGameState(page4), GAME_STATE_LEADING_FIRST_CARD);
 
-  // expect(declarer).toEqual("north");
-  // expect(dummy).toEqual("south");
-  // expect(currentBid).toEqual([3, "HEART"]);
-  // expect(players).toMatchSnapshot();
-  // expect(currentPlayer).toMatchSnapshot();
+  const { currentBid, declarer, dummy } = yield getState(page4);
+
+  deepStrictEqual(declarer, "north");
+  deepStrictEqual(dummy, "south");
+  deepStrictEqual(currentBid, [8, "HEART"]);
 }
 
 export default {
