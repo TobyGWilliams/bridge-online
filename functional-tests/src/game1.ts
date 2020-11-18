@@ -53,6 +53,8 @@ function* test(browser: Browser) {
   yield page1.click(BUTTON_PASS);
   yield page2.click(BUTTON_PASS);
 
+  yield wait(100);
+
   deepStrictEqual(yield getGameState(page1), GAME_STATE_LEADING_FIRST_CARD);
   deepStrictEqual(yield getGameState(page2), GAME_STATE_LEADING_FIRST_CARD);
   deepStrictEqual(yield getGameState(page3), GAME_STATE_LEADING_FIRST_CARD);
@@ -62,7 +64,7 @@ function* test(browser: Browser) {
 
   deepStrictEqual(declarer, "north");
   deepStrictEqual(dummy, "south");
-  deepStrictEqual(currentBid, [8, "HEART"]);
+  deepStrictEqual(currentBid, [3, "HEART"]);
 }
 
 export default {

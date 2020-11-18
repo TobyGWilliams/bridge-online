@@ -21,7 +21,6 @@ import {
   GAME_STATE_LEADING_FIRST_CARD,
 } from "./constants/selectors";
 
-
 const SEED = "this is the game seed";
 
 function* test(browser: Browser) {
@@ -45,35 +44,31 @@ function* test(browser: Browser) {
   deepStrictEqual(yield getCards(page3), PLAYER3CARDS);
   deepStrictEqual(yield getCards(page4), PLAYER4CARDS);
 
-  yield bid(page1, [1, "HEART"]);
-  yield bid(page2, [2, "SPADE"]);
-  yield bid(page3, [3, "HEART"]);
+  yield bid(page1, [1, "NO_TRUMPS"]);
+  yield bid(page2, [2, "NO_TRUMPS"]);
+  yield bid(page3, [3, "NO_TRUMPS"]);
+  yield bid(page4, [4, "NO_TRUMPS"]);
 
-  yield page1.click(BUTTON_PASS);
+  yield wait(100);
+
+  yield bid(page1, [5, "NO_TRUMPS"]);
+
   yield page2.click(BUTTON_PASS);
   yield page3.click(BUTTON_PASS);
+  yield page4.click(BUTTON_PASS);
 
-  yield wait(500);
+  yield wait(100);
 
   deepStrictEqual(yield getGameState(page1), GAME_STATE_LEADING_FIRST_CARD);
   deepStrictEqual(yield getGameState(page2), GAME_STATE_LEADING_FIRST_CARD);
   deepStrictEqual(yield getGameState(page3), GAME_STATE_LEADING_FIRST_CARD);
   deepStrictEqual(yield getGameState(page4), GAME_STATE_LEADING_FIRST_CARD);
 
-  const {
-    currentBid,
-    players,
-    currentPlayer: { connectionId, ...currentPlayer },
-    declarer,
-    dummy,
-  } = yield getState(page4);
+  const { currentBid, declarer, dummy } = yield getState(page4);
 
-  // expect(declarer).toEqual("west");
-  // expect(dummy).toEqual("east");
-  // expect(currentBid).toEqual([4, "NO_TRUMPS"]);
-  // expect(players).toMatchSnapshot();
-  // expect(currentPlayer).toMatchSnapshot();
-  // yield browser.close();
+  deepStrictEqual(declarer, "north");
+  deepStrictEqual(dummy, "south");
+  deepStrictEqual(currentBid, [5, "NO_TRUMPS"]);
 }
 
 export default {
