@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 
-import logger, { log } from "../logger";
+import logger from "../logger";
 
 const getBrowser = () =>
   chromium.launch({
@@ -11,9 +11,5 @@ const getBrowser = () =>
       log: (name, severity, message, args) => logger(message as string, 3),
     },
   });
-
-// export default (...props: any) =>
-//   // @ts-ignore
-//   log(() => getBrowser(...props), "get browser");
 
 export default getBrowser;
