@@ -1,21 +1,21 @@
 import { Browser } from "playwright";
 import { deepStrictEqual } from "assert";
 
-import createGame from "./sagas/create-game";
-import seatPlayer from "./sagas/seat-player";
+import createGame from "../sagas/create-game";
+import seatPlayer from "../sagas/seat-player";
 
-import addPlayer from "./util/add-player";
-import bid from "./util/bid";
-import wait from "./util/wait";
-import getCards from "./util/get-cards";
-import getGameState from "./util/get-game-state";
-import getState from "./util/get-state";
+import addPlayer from "../util/add-player";
+import bid from "../util/bid";
+import wait from "../util/wait";
+import getCards from "../util/get-cards";
+import getGameState from "../util/get-game-state";
+import getState from "../util/get-state";
 
 import {
   BUTTON_BEGIN_GAME,
   BUTTON_PASS,
   GAME_STATE_LEADING_FIRST_CARD,
-} from "./constants/selectors";
+} from "../constants/selectors";
 
 const SEED = "I am a value";
 const PLAYER1CARDS =
@@ -52,7 +52,10 @@ function* test(browser: Browser) {
   yield bid(page1, [1, "HEART"]);
   yield bid(page2, [2, "SPADE"]);
   yield bid(page3, [3, "HEART"]);
-
+  yield page4.click(BUTTON_PASS);
+  yield page1.click(BUTTON_PASS);
+  yield bid(page2, [3, "SPADE"]);
+  yield bid(page3, [4, "HEART"]);
   yield page4.click(BUTTON_PASS);
   yield page1.click(BUTTON_PASS);
   yield page2.click(BUTTON_PASS);
@@ -68,7 +71,7 @@ function* test(browser: Browser) {
 
   deepStrictEqual(declarer, "north");
   deepStrictEqual(dummy, "south");
-  deepStrictEqual(currentBid, [3, "HEART"]);
+  deepStrictEqual(currentBid, [4, "HEART"]);
 }
 
 export default {

@@ -1,13 +1,13 @@
 import { Browser } from "playwright";
 import { deepStrictEqual } from "assert";
 
-import createGame from "./sagas/create-game";
-import seatPlayer from "./sagas/seat-player";
+import createGame from "../sagas/create-game";
+import seatPlayer from "../sagas/seat-player";
 
-import addPlayer from "./util/add-player";
-import bid from "./util/bid";
-import wait from "./util/wait";
-import getCards from "./util/get-cards";
+import addPlayer from "../util/add-player";
+import bid from "../util/bid";
+import wait from "../util/wait";
+import getCards from "../util/get-cards";
 
 import {
   BUTTON_BEGIN_GAME,
@@ -17,9 +17,9 @@ import {
   PLAYER2CARDS,
   PLAYER3CARDS,
   PLAYER4CARDS,
-} from "./constants/selectors";
-import getGameState from "./util/get-game-state";
-import getState from "./util/get-state";
+} from "../constants/selectors";
+import getGameState from "../util/get-game-state";
+import getState from "../util/get-state";
 
 const SEED = "this is the game seed";
 

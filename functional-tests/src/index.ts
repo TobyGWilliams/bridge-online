@@ -2,9 +2,9 @@ import setup from "./test-runner/setup";
 import run from "./test-runner";
 import { close, write } from "./test-runner/readline";
 
-import game1 from "./game1";
-import game2 from "./game2";
-import game3 from "./game3";
+import game1 from "./tests/game1";
+import game2 from "./tests/game2";
+import game3 from "./tests/game3";
 
 function* gen() {
   yield* setup(game1);
