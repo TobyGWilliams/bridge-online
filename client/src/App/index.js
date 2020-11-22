@@ -37,6 +37,7 @@ const Wrapper = () => {
       }
 
       if (action === "STATE") {
+        console.log(data);
         setGameState(data);
       }
     };
@@ -55,7 +56,13 @@ const Wrapper = () => {
       }}
     >
       <Helmet>
+        <meta
+          name="player-cards"
+          content={JSON.stringify(gameState?.currentPlayer?.cards)}
+        />
         <meta name="game-id" content={gameState?.gameId} />
+        <meta name="game-state" content={gameState?.state} />
+        <meta name="state" content={JSON.stringify(gameState)} />
       </Helmet>
       <App />
     </GameContext.Provider>

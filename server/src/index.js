@@ -5,7 +5,6 @@ const { v4: uuid } = require("uuid");
 const Game = require("./modules/game");
 
 console.clear();
-console.log("-----------------------------");
 
 const gameActions = Object.entries(Game.GAME_ACTIONS).map(
   ([key, value]) => value
@@ -36,7 +35,7 @@ const messageHandler = (connectionId, socket) => (message) => {
   }
 
   if (action === "CREATE_GAME") {
-    const game = new Game();
+    const game = new Game(data.seed);
     const messageCallback = (message) => socket.send(message);
 
     games.push(game);
