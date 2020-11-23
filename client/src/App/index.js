@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 
+import { useCookies } from "react-cookie";
+
 import App from "./App";
 
 import sendAction from "../util/send-action";
@@ -8,6 +10,7 @@ import GameContext from "../GameContext";
 
 import "./index.css";
 
+const SESSION_COOKIE = "session-id";
 const port = 7777;
 
 const Wrapper = () => {
@@ -15,14 +18,25 @@ const Wrapper = () => {
   const [connected, setConnected] = useState(false);
   const [socket, setSocket] = useState(undefined);
   const [sessionId, setSessionId] = useState(undefined);
+  const [cookie, setCookie] = useCookies();
 
   useEffect(() => {
+    const cookieSessionId = cookie[SESSION_COOKIE];
     const socket = new WebSocket(`ws://localhost:${port}`);
 
     socket.onopen = () => {
       setConnected(true);
       setSocket(socket);
-      sendAction(socket, sessionId, "NEW_SESSION");
+
+      // There's no session-id from the cookie, so tell the server this is a new session
+      if (!cookieSessionId) {
+        sendAction(socket, cookieSessionId, "NEW_SESSION");
+        return;
+      }
+
+      // Tell the server that we are resuming
+      sendAction(socket, cookieSessionId, "RESUME_SESSION");
+      setSessionId(cookieSessionId);
     };
 
     socket.onclose = () => {
@@ -38,12 +52,16 @@ const Wrapper = () => {
         if (!data.sessionId) {
           throw new Error("Session Id not set");
         }
+        console.log(data.sessionId);
         setSessionId(data.sessionId);
+        setCookie(SESSION_COOKIE, data.sessionId);
+
+        return;
       }
 
       if (action === "STATE") {
         console.log(data);
-        setGameState(data);
+        // setGameState(data);
       }
     };
   }, []);
@@ -53,13 +71,11 @@ const Wrapper = () => {
       value={{
         state: gameState,
         connected,
-        sendMessage: (action, data) => {
-          console.log(sessionId);
+        sendMessage: (action, data) =>
           sendAction(socket, sessionId, action, {
             ...data,
             gameId: data?.gameId || gameState?.gameId,
-          });
-        },
+          }),
       }}
     >
       <Helmet>
