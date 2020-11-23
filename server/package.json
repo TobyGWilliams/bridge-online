@@ -7,8 +7,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --inspect ./src/index.js ",
-    "client": "nodemon --inspect=9221 ./src/client.js",
+    "watch": "nodemon -w ./dist ./dist/index.js --gui",
+    "compile": "babel src --out-dir dist --extensions \".ts\" --source-maps inline --watch",
     "test": "jest --watch --runInBand --detectOpenHandles"
   },
   "author": "",

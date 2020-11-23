@@ -14,6 +14,7 @@ const Wrapper = () => {
   const [gameState, setGameState] = useState(undefined);
   const [connected, setConnected] = useState(false);
   const [socket, setSocket] = useState(undefined);
+  const [sessionId, setSessionId] = useState(undefined);
 
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:${port}`);
@@ -21,7 +22,7 @@ const Wrapper = () => {
     socket.onopen = () => {
       setConnected(true);
       setSocket(socket);
-      sendAction(socket, "NEW_SESSION");
+      sendAction(socket, sessionId, "NEW_SESSION");
     };
 
     socket.onclose = () => {
@@ -32,8 +33,12 @@ const Wrapper = () => {
     socket.onmessage = ({ data: message }) => {
       const { action, data } = JSON.parse(message);
 
-      if (action === "SET_CONNECTION_ID") {
-        console.log("connectionId", data);
+      if (action === "NEW_SESSION") {
+        console.log("NEW_SESSION", data);
+        if (!data.sessionId) {
+          throw new Error("Session Id not set");
+        }
+        setSessionId(data.sessionId);
       }
 
       if (action === "STATE") {
@@ -48,11 +53,13 @@ const Wrapper = () => {
       value={{
         state: gameState,
         connected,
-        sendMessage: (action, data) =>
-          sendAction(socket, action, {
+        sendMessage: (action, data) => {
+          console.log(sessionId);
+          sendAction(socket, sessionId, action, {
             ...data,
             gameId: data?.gameId || gameState?.gameId,
-          }),
+          });
+        },
       }}
     >
       <Helmet>

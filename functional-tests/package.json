@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch": "nodemon -w ./dist ./dist/index.js --gui",
+    "watch": "nodemon -w ./dist ./dist/index.js",
     "compile": "babel src --out-dir dist --extensions \".ts\" --source-maps inline --watch",
     "process": "lsof -U +c 15 | cut -f1 -d' ' | sort | uniq -c | sort -rn | head -3",
     "nodemon": ""

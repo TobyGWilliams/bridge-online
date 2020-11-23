@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "baseUrl": "src",
+    // "baseUrl": "src",
     "esModuleInterop": true,
     "isolatedModules": true,
     "module": "commonjs",

@@ -2,68 +2,45 @@ import WebSocket from "ws";
 import express from "express";
 import { v4 as uuid } from "uuid";
 
-import Game from "./modules/game";
+// import Game from "./modules/game";
+import sendAction from "./modules/send-action";
 
 console.clear();
 
-const gameActions = Object.entries(Game.GAME_ACTIONS).map(
-  ([key, value]) => value
-);
+// const gameActions = Object.entries(Game.GAME_ACTIONS).map(
+//   ([key, value]) => value
+// );
 
-const findGame = (games: Array<Game>, gameId: string) =>
-  games.find((game) => game.gameId === gameId);
+// const findGame = (games: Array<Game>, gameId: string) =>
+//   games.find((game) => game.gameId === gameId);
 
 const app = express();
 const port = 7777;
 
-const games: Array<Game> = [];
+const sessions = new Map<string, string>();
+// const games: Array<Game> = [];
 
 const server = new WebSocket.Server({ server: app.listen(port) });
 
-const messageHandler = (connectionId: string, socket: WebSocket) => (
-  message: string
-) => {
-  const { action, data } = JSON.parse(message);
+const messageHandler = (socket: WebSocket) => (message: string) => {
+  const { action, data, sessionId } = JSON.parse(message);
 
-  if (gameActions.includes(action)) {
-    const game = findGame(games, data.gameId);
+  if (!sessionId) {
+    const sessionId = uuid();
+    sessions.set(sessionId, "hello world");
 
-    if (!game) {
-      return;
-    }
+    console.log(sessions);
 
-    if (!game.callbacks[connectionId]) {
-      console.error("game not associated with player");
-      return;
-    }
-
-    game.action(connectionId, action, data);
+    sendAction(socket, "NEW_SESSION", { sessionId });
+    return;
   }
 
-  if (action === "CREATE_GAME") {
-    const game = new Game(data.seed);
-    const messageCallback = (message) => socket.send(message);
+  const session = sessions.get(sessionId);
 
-    games.push(game);
-    game.addConnection(connectionId, messageCallback);
-  }
-
-  if (action === "JOIN_GAME") {
-    const game = findGame(games, data.gameId);
-
-    if (!game) return;
-
-    const messageCallback = (message) => socket.send(message);
-    game.addConnection(connectionId, messageCallback);
-  }
-
-  if (action === "NEW_SESSION") {
-    sendAction(socket, "SET_CONNECTION_ID", { connectionId });
-  }
+  console.log(session);
+  console.log(action, data);
 };
 
 server.on("connection", (socket) => {
-  const connectionId = uuid();
-
-  socket.on("message", messageHandler(connectionId, socket));
+  socket.on("message", messageHandler(socket));
 });
