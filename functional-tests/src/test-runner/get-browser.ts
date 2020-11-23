@@ -4,7 +4,7 @@ import logger from "../logger";
 
 const getBrowser = () =>
   chromium.launch({
-    headless: true,
+    headless: !process.argv.includes("--gui"),
     timeout: 1000,
     logger: {
       isEnabled: () => true,

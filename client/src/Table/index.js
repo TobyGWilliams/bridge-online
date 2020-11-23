@@ -20,6 +20,10 @@ export default () => {
       <Player direction="west" player={state?.players?.west}></Player>
       {state?.currentPlayer && (
         <div>
+          <h2>Your name</h2>
+          {state?.currentPlayer?.name}
+          <h2>Your direction</h2>
+          {state?.currentPlayer?.direction}
           <h2>Your Move?</h2>
           <div>
             {state?.currentPlayer?.currentUserAction
@@ -36,7 +40,6 @@ export default () => {
               <Card card={card}></Card>
             ))}
           </div>
-
         </div>
       )}
       {state?.declarer && (

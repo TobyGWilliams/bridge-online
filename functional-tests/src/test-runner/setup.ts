@@ -10,7 +10,7 @@ type TestFile = {
 
 export default function* setup({ test, name }: TestFile): Generator {
   write(`\n\tTEST: ${name}`);
-  
+
   const browser: any = yield getBrowser();
 
   try {

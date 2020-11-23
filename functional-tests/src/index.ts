@@ -8,8 +8,8 @@ import game3 from "./tests/game3";
 
 function* gen() {
   yield* setup(game1);
-  yield* setup(game2);
-  yield* setup(game3);
+  // yield* setup(game2);
+  // yield* setup(game3);
 }
 
 (async function () {

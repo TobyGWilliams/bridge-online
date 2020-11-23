@@ -1,26 +1,41 @@
-const { v4: uuid } = require("uuid");
+import { v4 as uuid } from "uuid";
 
-const { contracts, getRemainingContracts } = require("./bids");
-const { dealCards } = require("./cards");
-const {
-  north,
-  east,
-  south,
-  west,
-  northSouth,
-  eastWest,
-} = require("./directions");
+import { contracts, getRemainingContracts } from "./bids";
+import { dealCards } from "./cards";
+import { north, east, south, west, northSouth, eastWest } from "./directions";
 
-const sendToAll = (connections, callback) => {
+const sendToAll = (
+  connections: { [s: string]: unknown } | ArrayLike<unknown>,
+  callback: {
+    ([key, callback]: [any, any]): void;
+    (value: [string, unknown], index: number, array: [string, unknown][]): void;
+  }
+) => {
   Object.entries(connections).forEach(callback);
 };
 
-const iterateOverPlayers = (players, callback) => {
+const iterateOverPlayers = (
+  players: { [s: string]: unknown } | ArrayLike<unknown>,
+  callback: {
+    ([playerDirection, player]: [any, any]): any[];
+    ([key, player]: [any, any]): any[];
+    ([key, player]: [any, any]): any[];
+    ([key, player]: [any, any]): any[];
+    (
+      value: [string, unknown],
+      index: number,
+      array: [string, unknown][]
+    ): unknown;
+  }
+) => {
   const playersAsArray = Object.entries(players).map(callback);
   return Object.fromEntries(playersAsArray);
 };
 
-const getPlayer = (players, connectionId) => {
+const getPlayer = (
+  players: { [s: string]: unknown } | ArrayLike<unknown>,
+  connectionId: any
+) => {
   const [direction] = Object.entries(players).find(
     ([key, player]) => player.connectionId === connectionId
   );
@@ -56,10 +71,29 @@ const orderOfPlay = {
   west: north,
 };
 
-const getNextPlayerToPlay = (direction) => orderOfPlay[direction];
+const getNextPlayerToPlay = (direction: string | number) =>
+  orderOfPlay[direction];
+
+interface Callbacks {
+  [key: string]: () => void;
+}
+
+type Bid = [suite: string, level: string];
 
 class Game {
-  constructor(seed) {
+  gameId: string;
+  callbacks: Callbacks;
+  seed: string;
+  dummy: null;
+  declarer: null;
+  players: {};
+  state: string;
+  messageSequence: number;
+  currentBid?: Bid;
+  winningBid?: Bid;
+  bids: Bid[];
+
+  constructor(seed: string) {
     this.declarer = null;
     this.dummy = null;
     this.seed = seed;
@@ -68,8 +102,8 @@ class Game {
     this.players = {};
     this.state = "LOBBY";
     this.messageSequence = 1;
-    this.currentBid = null;
-    this.winningBid = null;
+    this.currentBid = undefined;
+    this.winningBid = undefined;
     this.bids = [];
   }
 
@@ -138,7 +172,7 @@ class Game {
     };
   }
 
-  startBidding(direction) {
+  startBidding(direction: string) {
     this.state = "BIDDING";
 
     this.players = iterateOverPlayers(
@@ -157,7 +191,7 @@ class Game {
     this.updateClientState();
   }
 
-  placeBid(bid, direction) {
+  placeBid(bid: string | null, direction: unknown) {
     const nextDirectionToPlay = getNextPlayerToPlay(direction);
 
     if (this.state !== "BIDDING") {
@@ -183,9 +217,8 @@ class Game {
         const winningPartners = partners[lastDirectionToBid];
 
         const winningBids = this.bids.filter(
-          ([direction, [contract, suit]]) => (
+          ([direction, [contract, suit]]) =>
             partners[direction] === winningPartners && suit === winningSuit
-          )
         );
 
         const [declarer] = winningBids[winningBids.length - 1];
@@ -242,20 +275,27 @@ class Game {
     this.updateClientState();
   }
 
-  updatePlayerAction(direction) {
+  updatePlayerAction(direction: string | number) {
     this.players[direction] = {
       ...this.players[direction],
       currentUserAction: true,
     };
   }
 
-  addConnection(connectionId, callback) {
+  addConnection(
+    connectionId: string,
+    callback: { (message: any): void; (message: any): void }
+  ) {
     this.callbacks[connectionId] = callback;
 
     this.updateClientState();
   }
 
-  action(connectionId, action, data) {
+  action(
+    connectionId: string,
+    action: string,
+    data: { position: string | number; name: any; bid: any }
+  ) {
     if (action === Game.GAME_ACTIONS.newPlayer) {
       if (!data.position) return;
       if (this.players[data.position]) return;
@@ -289,4 +329,4 @@ class Game {
   }
 }
 
-module.exports = Game;
+export default Game;

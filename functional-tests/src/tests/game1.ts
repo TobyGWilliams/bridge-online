@@ -1,6 +1,8 @@
 import { Browser } from "playwright";
 import { deepStrictEqual } from "assert";
 
+import pause from "../test-runner/pause";
+
 import createGame from "../sagas/create-game";
 import seatPlayer from "../sagas/seat-player";
 
@@ -8,6 +10,9 @@ import addPlayer from "../util/add-player";
 import bid from "../util/bid";
 import wait from "../util/wait";
 import getCards from "../util/get-cards";
+import getGameState from "../util/get-game-state";
+import getState from "../util/get-state";
+
 
 import {
   BUTTON_BEGIN_GAME,
@@ -18,8 +23,6 @@ import {
   PLAYER3CARDS,
   PLAYER4CARDS,
 } from "../constants/selectors";
-import getGameState from "../util/get-game-state";
-import getState from "../util/get-state";
 
 const SEED = "this is the game seed";
 
@@ -65,6 +68,8 @@ function* test(browser: Browser) {
   deepStrictEqual(declarer, "north");
   deepStrictEqual(dummy, "south");
   deepStrictEqual(currentBid, [3, "HEART"]);
+
+  yield pause();
 }
 
 export default {
