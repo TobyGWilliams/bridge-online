@@ -5,66 +5,103 @@ import { v4 as uuid } from "uuid";
 import Game, { GameCallback } from "./modules/game";
 import sendAction from "./modules/send-action";
 
-console.clear();
-
-// const gameActions = Object.entries(Game.GAME_ACTIONS).map(
-//   ([key, value]) => value
-// );
-
-// const findGame = (games: Array<Game>, gameId: string) =>
-//   games.find((game) => game.gameId === gameId);
+interface User {
+  socket?: WebSocket;
+  game?: Game;
+}
 
 const app = express();
 const port = 7777;
 
-const sessions = new Map<string, string>();
-const games: Array<Game> = [];
-
+const sessions = new Map<string, User>();
+const games = new Map<string, Game>();
 const server = new WebSocket.Server({ server: app.listen(port) });
+
+const gameMessageCallback: GameCallback = (message, sessionId) => {
+  const { socket } = sessions.get(sessionId) || {};
+
+  if (!socket) {
+    console.log("session didnt exist");
+    return;
+  }
+
+  sendAction(socket as WebSocket, "STATE", message);
+};
+
+const createNewSession = (socket: WebSocket) => {
+  const sessionId = uuid();
+  sessions.set(sessionId, { socket, game: undefined });
+
+  sendAction(socket, "NEW_SESSION", { sessionId });
+
+  return;
+};
 
 const messageHandler = (socket: WebSocket) => (message: string) => {
   const { action, data, sessionId } = JSON.parse(message);
 
   if (!sessionId) {
-    const sessionId = uuid();
-    sessions.set(sessionId, "hello world");
-
-    sendAction(socket, "NEW_SESSION", { sessionId });
-
+    createNewSession(socket);
     return;
   }
 
   const session = sessions.get(sessionId);
 
-  if (!session && action === "RESUME_SESSION") {
-    const sessionId = uuid();
-    sessions.set(sessionId, "hello world");
-
-    sendAction(socket, "NEW_SESSION", { sessionId });
-
-    return;
-  }
-
-  if (!session && action !== "RESUME_SESSION") {
+  if (!session) {
+    if (action === "RESUME_SESSION") {
+      createNewSession(socket);
+      return;
+    }
+    console.log("no session");
     // sessionId didn't match an active session and it wasn't a resume action
     return;
   }
 
   if (action === "RESUME_SESSION") {
-    // we should see if the session is associated with a live game
-    return;
+    if (!session.socket) {
+      sessions.set(sessionId, { ...session, socket });
+    }
+
+    if (session.game) {
+      session.game.updateClientsState();
+      return;
+    }
+
+    console.log("no existing game!");
   }
 
   if (action === "CREATE_GAME") {
-    const gameMessageCallback: GameCallback = (message) => {
-      console.log("send mesasage", message);
-    };
-    const game = new Game(data.seed, gameMessageCallback);
-    game.action()
-    console.log(action, data, game);
+    const session = sessions.get(sessionId);
+
+    if (!session) {
+      console.log("no session found", action);
+      return;
+    }
+
+    if (session.game) {
+      session.game.updateClientsState();
+      return;
+    }
+
+    const gameId = uuid();
+    const game = new Game(gameId, data.seed, gameMessageCallback);
+
+    games.set(gameId, game);
+    game.addPlayer(sessionId);
+
+    sessions.set(sessionId, { ...session, game });
+
+    return;
   }
+};
+
+const closeHandler = () => {
+  sessions.forEach(({ socket, ...session }, key) => {
+    sessions.set(key, { ...session });
+  });
 };
 
 server.on("connection", (socket) => {
   socket.on("message", messageHandler(socket));
+  socket.on("close", closeHandler);
 });

@@ -52,7 +52,7 @@ const Wrapper = () => {
         if (!data.sessionId) {
           throw new Error("Session Id not set");
         }
-        console.log(data.sessionId);
+        console.log("SESSION_ID", data.sessionId);
         setSessionId(data.sessionId);
         setCookie(SESSION_COOKIE, data.sessionId);
 
@@ -60,8 +60,8 @@ const Wrapper = () => {
       }
 
       if (action === "STATE") {
-        console.log(data);
-        // setGameState(data);
+        // console.log("STATE", data);
+        setGameState(data);
       }
     };
   }, []);

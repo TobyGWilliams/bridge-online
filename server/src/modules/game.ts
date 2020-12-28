@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import { north, east, south, west, northSouth, eastWest } from "./directions";
 
 interface State {
+  stateName: string;
   dummy?: string;
   declarer?: string;
   currentBid?: Bid;
@@ -10,13 +11,13 @@ interface State {
 }
 
 type Bid = [suite: string, level: string];
-export type GameCallback = (message: string) => void;
+export type GameCallback = (message: any, playerId: string) => void;
 
 class Game {
   gameId: string;
   callback: GameCallback;
   seed: string;
-  players: {};
+  players: Array<string>;
   state: State;
 
   static GAME_ACTIONS = {
@@ -25,12 +26,13 @@ class Game {
     bid: "BID",
   };
 
-  constructor(seed: string, callback: GameCallback) {
+  constructor(gameId: string, seed: string, callback: GameCallback) {
     this.callback = callback;
-    this.gameId = uuid();
-    this.players = {};
+    this.gameId = gameId;
+    this.players = [];
     this.seed = seed || uuid();
     this.state = {
+      stateName: "LOBBY",
       dummy: undefined,
       declarer: undefined,
       currentBid: undefined,
@@ -38,8 +40,15 @@ class Game {
     };
   }
 
-  action() {
-    this.callback("hello");
+  updateClientsState() {
+    this.players.forEach((player) => {
+      this.callback({ gameId: this.gameId }, player);
+    });
+  }
+
+  addPlayer(playerId: string) {
+    this.players.push(playerId);
+    this.updateClientsState();
   }
 }
 
