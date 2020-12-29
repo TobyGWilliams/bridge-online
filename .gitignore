@@ -1,5 +1,6 @@
 server/node_modules
 server/dist
+server/output
 client/node_modules
 functional-tests/node_modules
 functional-tests/screenshots

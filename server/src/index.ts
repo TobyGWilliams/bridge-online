@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 
 import Game, { GameCallback } from "./modules/game";
 import sendAction from "./modules/send-action";
-
+import logger from "./utils/logger";
 interface User {
   socket?: WebSocket;
   game?: Game;
@@ -16,6 +16,7 @@ const port = 7777;
 const sessions = new Map<string, User>();
 const games = new Map<string, Game>();
 const server = new WebSocket.Server({ server: app.listen(port) });
+const arrayOfGameActions = Object.values(Game.GAME_ACTIONS);
 
 const gameMessageCallback: GameCallback = (message, sessionId) => {
   const { socket } = sessions.get(sessionId) || {};
@@ -87,10 +88,15 @@ const messageHandler = (socket: WebSocket) => (message: string) => {
     const game = new Game(gameId, data.seed, gameMessageCallback);
 
     games.set(gameId, game);
-    game.addPlayer(sessionId);
+    game.addUser(sessionId);
 
     sessions.set(sessionId, { ...session, game });
 
+    return;
+  }
+
+  if (session.game && arrayOfGameActions.includes(action)) {
+    session.game.gameAction(sessionId, action, data);
     return;
   }
 };

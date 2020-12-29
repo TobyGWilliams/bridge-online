@@ -1,13 +1,24 @@
 import { v4 as uuid } from "uuid";
+import logger from "../utils/logger";
 
 import { north, east, south, west, northSouth, eastWest } from "./directions";
 
+interface Player {
+  userId: string;
+}
 interface State {
   stateName: string;
   dummy?: string;
   declarer?: string;
   currentBid?: Bid;
   winningBid?: Bid;
+  initialDirection: string;
+  players: {
+    north?: Player;
+    south?: Player;
+    east?: Player;
+    west?: Player;
+  };
 }
 
 type Bid = [suite: string, level: string];
@@ -17,7 +28,7 @@ class Game {
   gameId: string;
   callback: GameCallback;
   seed: string;
-  players: Array<string>;
+  users: Array<string>;
   state: State;
 
   static GAME_ACTIONS = {
@@ -29,7 +40,7 @@ class Game {
   constructor(gameId: string, seed: string, callback: GameCallback) {
     this.callback = callback;
     this.gameId = gameId;
-    this.players = [];
+    this.users = [];
     this.seed = seed || uuid();
     this.state = {
       stateName: "LOBBY",
@@ -37,18 +48,35 @@ class Game {
       declarer: undefined,
       currentBid: undefined,
       winningBid: undefined,
+      initialDirection: north,
+      players: {
+        north: undefined,
+        south: undefined,
+        east: undefined,
+        west: undefined,
+      },
     };
   }
 
   updateClientsState() {
-    this.players.forEach((player) => {
-      this.callback({ gameId: this.gameId }, player);
+    this.users.forEach((user) => {
+      this.callback({ gameId: this.gameId }, user);
     });
   }
 
-  addPlayer(playerId: string) {
-    this.players.push(playerId);
+  addUser(userId: string) {
+    this.users.push(userId);
     this.updateClientsState();
+  }
+
+  gameAction(userId: string, action: string, data: object) {
+    logger("in game action");
+    logger({ action, data, userId });
+
+    if (action === Game.GAME_ACTIONS.newPlayer) {
+
+      this.state
+    }
   }
 }
 
