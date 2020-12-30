@@ -47,12 +47,10 @@ const Wrapper = () => {
     socket.onmessage = ({ data: message }) => {
       const { action, data } = JSON.parse(message);
 
-      if (action === "NEW_SESSION") {
-        console.log("NEW_SESSION", data);
+      if (action === "SET_SESSION_ID") {
         if (!data.sessionId) {
           throw new Error("Session Id not set");
         }
-        console.log("SESSION_ID", data.sessionId);
         setSessionId(data.sessionId);
         setCookie(SESSION_COOKIE, data.sessionId);
 

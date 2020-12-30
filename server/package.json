@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "got": "^11.3.0",
     "nodemon": "^2.0.4",
+    "redux": "^4.0.5",
     "seedrandom": "^3.0.5",
     "set-cookie-parser": "^2.4.6",
     "uuid": "^8.2.0"
