@@ -13,15 +13,16 @@ export interface Game {
   declarer?: string;
   dummy?: string;
   initialDirection: string;
-  seed: string;
-  stateName: string;
-  winningBid?: Bid;
   players: {
     north?: Player;
     south?: Player;
     east?: Player;
     west?: Player;
   };
+  seed: string;
+  stateName: string;
+  users: string[];
+  winningBid?: Bid;
 }
 
 export interface Games {
@@ -32,5 +33,6 @@ export interface Action {
   data: {
     seed?: string;
   };
+  sessionId: string;
   type: GameActionTypes;
 }

@@ -1,23 +1,32 @@
 import { v4 as uuid } from "uuid";
 
-import { Action, GameActionTypes, Games, Game } from "./types";
+import { Action, Game, GameActionTypes, Games } from "./types";
 
-function reducer(state: Games = {}, { type, data }: Action): Games {
+function reducer(games: Games = {}, { type, data, sessionId }: Action): Games {
   if (type === GameActionTypes.createGame) {
-    const { seed } = data;
+    const usersAssociatedWithGames = Object.values(games).flatMap(
+      (game) => game.users
+    );
 
+    if (usersAssociatedWithGames.includes(sessionId)) {
+      return games;
+    }
+
+    const { seed } = data;
     const gameId = uuid();
+
     const game: Game = {
       seed: seed || uuid(),
       stateName: "LOBBY",
       initialDirection: "north",
       players: {},
+      users: [sessionId],
     };
 
-    return { ...state, [gameId]: game };
+    return { ...games, [gameId]: game };
   }
 
-  return state;
+  return games;
 }
 
 export default reducer;

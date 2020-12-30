@@ -6,7 +6,7 @@ import sendAction from "./utils/send-action";
 import store from "./redux/create-store";
 
 store.subscribe(() => {
-  console.log("store updated", store.getState());
+  console.log("send state to users");
 });
 
 interface User {
@@ -52,7 +52,7 @@ const messageHandler = (socket: WebSocket) => (message: string) => {
     return;
   }
 
-  store.dispatch({ type: action, data });
+  store.dispatch({ type: action, data, sessionId });
 };
 
 const closeHandler = () => {
